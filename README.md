@@ -25,7 +25,7 @@ This project already contains a ready-to-deploy web build in:
 5. Deploy.
 
 After deployment, open:
-- `https://<your-project>.pages.dev/PrincessCoinQuest.html`
+`https://<your-project>.pages.dev/PrincessCoinQuest.html`
 
 ### Option 2: Deploy with Wrangler CLI
 
