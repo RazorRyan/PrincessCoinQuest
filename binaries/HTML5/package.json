@@ -1,0 +1,12 @@
+{
+  "name": "princess-coin-quest",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "echo Static site ready for deployment",
+    "preview": "npx serve -p 8080 ."
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
