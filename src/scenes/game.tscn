@@ -11,6 +11,9 @@
 [ext_resource type="FontFile" uid="uid://c1sruh2ugrjnr" path="res://assets/fonts/PixelOperator8.ttf" id="8_gee14"]
 [ext_resource type="FontFile" uid="uid://drifv1m015rpk" path="res://assets/fonts/PixelOperator8-Bold.ttf" id="10_vtaks"]
 [ext_resource type="AudioStream" uid="uid://lsqae0j416bn" path="res://assets/music/time_for_adventure.mp3" id="11_kvpfn"]
+[ext_resource type="Texture2D" uid="uid://dmtf7llbph643" path="res://assets/controls/JumpButton_icon.png" id="12_dinhu"]
+[ext_resource type="Texture2D" uid="uid://cst8yryl0e8ts" path="res://assets/controls/LeftButton_Icon.png" id="12_kvuet"]
+[ext_resource type="Texture2D" uid="uid://csm1hv8w7rh73" path="res://assets/controls/RightButton_Icon.png" id="13_trtic"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lbhrr"]
 texture = ExtResource("3_lnu2h")
@@ -355,3 +358,27 @@ position = Vector2(32, 40)
 position = Vector2(0, -9)
 stream = ExtResource("11_kvpfn")
 autoplay = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1217490861]
+layer = 10
+
+[node name="LeftButton" type="TouchScreenButton" parent="CanvasLayer" unique_id=409660850]
+position = Vector2(80.00001, 540.00006)
+scale = Vector2(0.1, 0.1)
+texture_normal = ExtResource("12_kvuet")
+passby_press = true
+action = "move_left"
+
+[node name="RightButton" type="TouchScreenButton" parent="CanvasLayer" unique_id=164973567]
+position = Vector2(220, 540)
+scale = Vector2(0.1, 0.1)
+texture_normal = ExtResource("13_trtic")
+passby_press = true
+action = "move_right"
+
+[node name="JumpButton" type="TouchScreenButton" parent="CanvasLayer" unique_id=1289981159]
+position = Vector2(1080, 540)
+scale = Vector2(0.1, 0.1)
+texture_normal = ExtResource("12_dinhu")
+passby_press = true
+action = "jump"
