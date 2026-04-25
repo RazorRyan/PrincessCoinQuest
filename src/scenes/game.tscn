@@ -363,21 +363,21 @@ autoplay = true
 layer = 10
 
 [node name="LeftButton" type="TouchScreenButton" parent="CanvasLayer" unique_id=409660850]
-position = Vector2(80.00001, 540.00006)
+position = Vector2(70.00001, 540.00006)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("12_kvuet")
 passby_press = true
 action = "move_left"
 
 [node name="RightButton" type="TouchScreenButton" parent="CanvasLayer" unique_id=164973567]
-position = Vector2(220, 540)
+position = Vector2(210, 540)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("13_trtic")
 passby_press = true
 action = "move_right"
 
 [node name="JumpButton" type="TouchScreenButton" parent="CanvasLayer" unique_id=1289981159]
-position = Vector2(1080, 540)
+position = Vector2(1101.0001, 540.00006)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("12_dinhu")
 passby_press = true
