@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b8qlkk50hjyws"]
+
+[ext_resource type="Script" uid="uid://6hu20fxlhwfw" path="res://scripts/levels/ExitDoor.gd" id="1_kmp0d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kmp0d"]
+
+[node name="ExitDoor" type="Area2D" unique_id=388065539]
+script = ExtResource("1_kmp0d")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=458744822]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2023145246]
+shape = SubResource("RectangleShape2D_kmp0d")

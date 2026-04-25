@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://b6upob1enveel"]
+
+[ext_resource type="Script" uid="uid://c0a5bxdosp3yx" path="res://scripts/player/Player.gd" id="1_wr5hl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gfjak"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wr5hl"]
+
+[node name="Player" type="CharacterBody2D" unique_id=1740361640]
+script = ExtResource("1_wr5hl")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=796953374]
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=849687327]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1882572313]
+shape = SubResource("RectangleShape2D_gfjak")
+
+[node name="jump_sfx" type="AudioStreamPlayer2D" parent="." unique_id=958603648]
+
+[node name="hurt_sfx" type="AudioStreamPlayer2D" parent="." unique_id=994233344]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1126217118]
+shape = SubResource("RectangleShape2D_wr5hl")

@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://opwh0leivwii"]
+
+[ext_resource type="Script" uid="uid://dwr53ktx4ypyt" path="res://scripts/levels/LevelTemplate.gd" id="1_rd8yo"]
+[ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="2_h7kxv"]
+[ext_resource type="PackedScene" uid="uid://b8qlkk50hjyws" path="res://scenes/levels/ExitDoor.tscn" id="3_a5anj"]
+[ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="4_uq7hp"]
+
+[node name="LevelTemplate" type="Node2D" unique_id=1682050012]
+script = ExtResource("1_rd8yo")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=1322428494]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground" unique_id=1811821273]
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer" unique_id=1658198731]
+
+[node name="TileMap" type="TileMap" parent="." unique_id=577846116]
+format = 2
+
+[node name="Coins" type="Node" parent="." unique_id=1647129722]
+
+[node name="Enemies" type="Node" parent="." unique_id=1784566422]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1206467031]
+
+[node name="Player" parent="." unique_id=1579361341 instance=ExtResource("2_h7kxv")]
+position = Vector2(181, 142)
+
+[node name="ExitDoor" parent="." unique_id=1789859094 instance=ExtResource("3_a5anj")]
+position = Vector2(414, 140)
+
+[node name="Hud" parent="." unique_id=203162232 instance=ExtResource("4_uq7hp")]

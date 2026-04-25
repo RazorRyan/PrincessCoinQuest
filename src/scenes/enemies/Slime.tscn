@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://ds7rruqncwjgy"]
+
+[ext_resource type="Script" uid="uid://ji8wjcdin6s0" path="res://scripts/enemies/Slime.gd" id="1_im251"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_im251"]
+
+[node name="Slime" type="CharacterBody2D" unique_id=1885526685]
+script = ExtResource("1_im251")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1235527516]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1726854886]
+shape = SubResource("RectangleShape2D_im251")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1270978030]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1297392865]
+
+[node name="WallCheck" type="RayCast2D" parent="." unique_id=689731301]
+
+[node name="FloorCheck" type="RayCast2D" parent="." unique_id=200421151]

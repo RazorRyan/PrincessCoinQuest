@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cjpp1xrsvq5sy"]
+
+[ext_resource type="Script" uid="uid://bynjd1oqwvjsq" path="res://scripts/pickups/Coin.gd" id="1_wemvp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wemvp"]
+
+[node name="Coin" type="Area2D" unique_id=445336302]
+script = ExtResource("1_wemvp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=807285019]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1490501099]
+shape = SubResource("CircleShape2D_wemvp")

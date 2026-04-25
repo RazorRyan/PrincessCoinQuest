@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://ca8mfs7jn5b7o"]
+
+[ext_resource type="Script" uid="uid://bfjf6cokmv5yj" path="res://scripts/Hud.gd" id="1_kw0id"]
+
+[node name="Hud" type="CanvasLayer" unique_id=203162232]
+script = ExtResource("1_kw0id")
+
+[node name="CoinLabel" type="Label" parent="." unique_id=1022225481]
+offset_right = 40.0
+offset_bottom = 23.0
