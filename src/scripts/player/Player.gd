@@ -3,8 +3,8 @@ extends CharacterBody2D
 const SPEED := 130.0
 const JUMP_VELOCITY := -320.0
 const ATTACK_DAMAGE := 1
-const KNOCKBACK_FORCE := 200.0
-const INVINCIBILITY_DURATION := 0.8
+const KNOCKBACK_FORCE := 160.0
+const INVINCIBILITY_DURATION := 0.4
 
 @export var max_hp := 3
 
