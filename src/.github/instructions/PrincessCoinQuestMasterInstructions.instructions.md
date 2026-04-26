@@ -190,3 +190,44 @@ Never break existing working systems.
 5. Level progression
 6. Mobile controls
 7. Game feel polish
+
+## 📝 Change Log Rules
+
+Every time changes are made, a change log must be updated.
+
+Location:
+res://CHANGELOG.md (or project root CHANGELOG.md)
+
+Rules:
+- Every meaningful change must be recorded
+- Do not overwrite previous entries
+- Always append new entries at the top (latest first)
+
+Each entry must include:
+- Date (YYYY-MM-DD)
+- Short title of change
+- Files modified
+- Summary of what was done
+- Reason for change
+
+Format:
+
+## [YYYY-MM-DD] - Short Title
+
+**Files Changed:**
+- path/to/file.gd
+- path/to/scene.tscn
+
+**Summary:**
+Describe what was implemented or fixed.
+
+**Reason:**
+Explain why the change was necessary.
+
+---
+
+## ⚠️ Important
+
+- Do NOT skip logging changes
+- Do NOT batch unrelated changes into one entry
+- Keep entries concise but clear

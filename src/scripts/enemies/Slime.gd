@@ -16,11 +16,9 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = 0
 
+	wall_check.position.x = 18 * direction
 	wall_check.target_position = Vector2(18 * direction, 0)
 	floor_check.position.x = 12 * direction
-	floor_check.target_position = Vector2(0, 24)
-	
-	print("wall:", wall_check.is_colliding(), " floor:", floor_check.is_colliding())
 
 	if is_on_floor() and (wall_check.is_colliding() or not floor_check.is_colliding()):
 		flip_direction()
