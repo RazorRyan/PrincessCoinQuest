@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const HealthBarScene := preload("res://scenes/ui/EnemyHealthBar.tscn")
+
 @export var speed := 45.0
 @export var hp := 2
 @export var damage := 1
@@ -15,10 +17,15 @@ var _flip_cooldown := 0.0
 var _knockback_timer := 0.0
 var _is_hurt := false
 var _is_dying := false
+var _max_hp: int
+var _health_bar: ProgressBar
 
 func _ready() -> void:
+	_max_hp = hp
 	hitbox.body_entered.connect(_on_hitbox_body_entered)
 	wall_check.hit_from_inside = true
+	_health_bar = HealthBarScene.instantiate()
+	add_child(_health_bar)
 
 func _physics_process(delta: float) -> void:
 	if _is_dying:
@@ -77,10 +84,15 @@ func take_damage(amount: int, _from_position: Vector2 = Vector2.ZERO) -> void:
 		velocity.x = dir.x * knockback_force
 		_knockback_timer = 0.25
 
+	_update_health_bar()
 	if hp <= 0:
 		die()
 	else:
 		_play_hurt()
+
+func _update_health_bar() -> void:
+	_health_bar.value = float(hp) / float(_max_hp)
+	_health_bar.visible = true
 
 func _play_hurt() -> void:
 	_is_hurt = true

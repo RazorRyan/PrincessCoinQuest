@@ -1,4 +1,27 @@
-## [2026-04-26] - Fix player self-damage on attack; fix Slime Hitbox targeting
+## [2026-04-27] - Player and enemy health bars
+
+**Files Changed:**
+- scenes/ui/EnemyHealthBar.tscn (new)
+- scenes/ui/HUD.tscn
+- scenes/player/Player.tscn
+- scripts/Hud.gd
+- scripts/player/Player.gd
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- Created `EnemyHealthBar.tscn`: a small `ProgressBar` (32×4 px, red fill, dark background) positioned 28 local px above origin. Hidden by default, shown on first hit.
+- `Player.gd`: added `signal hp_changed(current, maximum)`. Emitted in `_ready()` and in `take_damage()` after hp is decremented.
+- `Player.tscn`: added `player` group so HUD can locate the Player via `get_first_node_in_group`.
+- `Hud.gd`: added `@onready var health_bar: ProgressBar = $HealthBar`. In `_connect_player()` (called deferred from `_ready()`), finds the Player node, connects `hp_changed`, and sets the initial bar value.
+- `HUD.tscn`: added `HealthBar` ProgressBar node (100×12 px, top-left anchor, same red style).
+- `Slime.gd`: preloads `EnemyHealthBar.tscn`. In `_ready()`, instantiates and adds it as a child. After each `take_damage()` call that doesn't kill, calls `_update_health_bar()` which sets `value = hp / max_hp` and makes the bar visible.
+
+**Reason:**
+No visual health feedback existed. Player had no way to know their remaining HP and enemies gave no indication of damage taken.
+
+---
+
+## [2026-04-27] - Fix player self-damage on attack; fix Slime Hitbox targeting
 
 **Files Changed:**
 - scripts/player/Player.gd

@@ -9,6 +9,8 @@ const ATTACK_COOLDOWN := 0.45
 
 @export var max_hp := 3
 
+signal hp_changed(current: int, maximum: int)
+
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
 
@@ -22,9 +24,11 @@ var _attack_hits := {}
 
 func _ready() -> void:
 	hp = max_hp
+	add_to_group("player")
 	attack_area.monitoring = false
 	attack_area.body_entered.connect(_on_attack_area_body_entered)
 	floor_snap_length = 8.0
+	hp_changed.emit(hp, max_hp)
 
 func _physics_process(delta: float) -> void:
 	if is_dying:
@@ -91,12 +95,14 @@ func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
 	hp -= amount
 	is_invincible = true
 	is_hurt = true
+	hp_changed.emit(hp, max_hp)
 
 	if from_position != Vector2.ZERO:
 		var knockback_dir := (global_position - from_position).normalized()
 		velocity = knockback_dir * KNOCKBACK_FORCE
 
 	sprite.play("hurt")
+	_start_hurt_flash()
 
 	if hp <= 0:
 		die()
@@ -105,6 +111,16 @@ func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
 	await get_tree().create_timer(INVINCIBILITY_DURATION).timeout
 	is_invincible = false
 	is_hurt = false
+
+func _start_hurt_flash() -> void:
+	var flash_interval := 0.07
+	var flashes := int(INVINCIBILITY_DURATION / (flash_interval * 2))
+	for i in flashes:
+		sprite.modulate = Color(1.0, 0.25, 0.25, 1.0)
+		await get_tree().create_timer(flash_interval).timeout
+		sprite.modulate = Color(1.0, 1.0, 1.0, 0.4)
+		await get_tree().create_timer(flash_interval).timeout
+	sprite.modulate = Color.WHITE
 
 func die() -> void:
 	is_dying = true

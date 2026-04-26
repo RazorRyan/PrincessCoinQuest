@@ -193,6 +193,7 @@ size = Vector2(14, 31)
 texture_filter = 1
 scale = Vector2(2, 2)
 script = ExtResource("1_wr5hl")
+groups = ["player"]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=796953374]
 sprite_frames = SubResource("SpriteFrames_ro0t8")

@@ -2,9 +2,31 @@
 
 [ext_resource type="Script" uid="uid://bfjf6cokmv5yj" path="res://scripts/Hud.gd" id="1_kw0id"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpbg"]
+bg_color = Color(0.15, 0.15, 0.15, 0.85)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpfill"]
+bg_color = Color(0.85, 0.15, 0.15, 1)
+
 [node name="Hud" type="CanvasLayer" unique_id=203162232]
 script = ExtResource("1_kw0id")
 
 [node name="CoinLabel" type="Label" parent="." unique_id=1022225481]
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 8.0
+offset_top = 28.0
+offset_right = 200.0
+offset_bottom = 48.0
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1022225482]
+anchor_left = 0.0
+anchor_right = 0.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 108.0
+offset_bottom = 22.0
+min_value = 0.0
+max_value = 1.0
+value = 1.0
+show_percentage = false
+theme_override_styles/background = SubResource("StyleBoxFlat_hpbg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_hpfill")
