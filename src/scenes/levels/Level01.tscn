@@ -211,6 +211,8 @@ position = Vector2(444.00003, 188)
 position = Vector2(161, 115)
 
 [node name="ExitDoor" parent="." unique_id=1789859094 instance=ExtResource("3_a5anj")]
-position = Vector2(414, 140)
+texture_filter = 1
+position = Vector2(57, 146)
+scale = Vector2(3, 3)
 
 [node name="Hud" parent="." unique_id=203162232 instance=ExtResource("4_uq7hp")]

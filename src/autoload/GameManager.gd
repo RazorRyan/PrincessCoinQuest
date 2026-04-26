@@ -6,6 +6,7 @@ var current_level: int = 1
 
 signal coins_changed(current: int, total: int)
 signal all_coins_collected
+signal level_completed
 
 func reset_level_coin_count(total: int) -> void:
 	coins_collected = 0

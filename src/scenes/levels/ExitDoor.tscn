@@ -1,13 +1,34 @@
 [gd_scene format=3 uid="uid://b8qlkk50hjyws"]
 
 [ext_resource type="Script" uid="uid://6hu20fxlhwfw" path="res://scripts/levels/ExitDoor.gd" id="1_kmp0d"]
+[ext_resource type="Texture2D" uid="uid://bvhypnhdtu06k" path="res://assets/tilesets/door_closed.png" id="2_closed"]
+[ext_resource type="Texture2D" uid="uid://cvy61cfliu2a2" path="res://assets/tilesets/door_open.png" id="3_open"]
+[ext_resource type="AudioStreamWAV" uid="uid://du8yqq2h3gisu" path="res://assets/sfx/Retro Success Melody 04 - electric piano 2.wav" id="4_sfx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kmp0d"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_door"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": ExtResource("2_closed")}],
+"loop": true,
+"name": &"closed",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("3_open")}],
+"loop": true,
+"name": &"open",
+"speed": 5.0
+}]
 
 [node name="ExitDoor" type="Area2D" unique_id=388065539]
 script = ExtResource("1_kmp0d")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=458744822]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=458744822]
+sprite_frames = SubResource("SpriteFrames_door")
+animation = &"closed"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2023145246]
 shape = SubResource("RectangleShape2D_kmp0d")
+
+[node name="success_sfx" type="AudioStreamPlayer2D" parent="." unique_id=520187344]
+stream = ExtResource("4_sfx")

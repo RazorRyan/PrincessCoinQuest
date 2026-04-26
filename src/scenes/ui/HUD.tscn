@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ca8mfs7jn5b7o"]
 
 [ext_resource type="Script" uid="uid://bfjf6cokmv5yj" path="res://scripts/Hud.gd" id="1_kw0id"]
+[ext_resource type="FontFile" uid="uid://drifv1m015rpk" path="res://assets/fonts/PixelOperator8-Bold.ttf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpbg"]
 bg_color = Color(0.15, 0.15, 0.15, 0.85)
@@ -30,3 +31,17 @@ value = 1.0
 show_percentage = false
 theme_override_styles/background = SubResource("StyleBoxFlat_hpbg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_hpfill")
+
+[node name="LevelCompleteLabel" type="Label" parent="." unique_id=612345678]
+anchor_left = 0.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -24.0
+offset_bottom = 24.0
+text = "Level Complete!"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+visible = false

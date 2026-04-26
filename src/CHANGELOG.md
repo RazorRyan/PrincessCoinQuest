@@ -1,3 +1,93 @@
+## [2026-04-27] - Level complete message on door entry
+
+**Files Changed:**
+- autoload/GameManager.gd
+- scripts/levels/ExitDoor.gd
+- scenes/ui/HUD.tscn
+- scripts/Hud.gd
+
+**Summary:**
+- `GameManager.gd`: added `signal level_completed`.
+- `ExitDoor.gd`: emits `GameManager.level_completed` immediately when the player enters the unlocked door, before the 0.4 s success-sound wait.
+- `HUD.tscn`: added `LevelCompleteLabel` — a `Label` anchored to the vertical centre of the screen, full-width, using `PixelOperator8-Bold` at 24 px, hidden by default.
+- `Hud.gd`: connects to `GameManager.level_completed` in `_ready()`; `_on_level_completed()` sets `LevelCompleteLabel.visible = true`.
+
+**Reason:**
+No feedback was shown to the player when exiting a level. The message displays during the brief sound delay before the next scene loads.
+
+---
+
+## [2026-04-27] - ExitDoor animations and success sound
+
+**Files Changed:**
+- scenes/levels/ExitDoor.tscn
+- scripts/levels/ExitDoor.gd
+
+**Summary:**
+- `ExitDoor.tscn`: replaced `Sprite2D` with `AnimatedSprite2D` backed by a `SpriteFrames` resource with two single-frame animations (`closed` → `door_closed.png`, `open` → `door_open.png`). Added `AudioStreamPlayer2D` node named `success_sfx` preloaded with `Retro Success Melody 04 - electric piano 2.wav`.
+- `ExitDoor.gd`: plays `"closed"` on `_ready()`; plays `"open"` and the success sound on unlock/entry; removed debug `print`; guards against double-play with `success_sfx.playing` check; waits 0.4 s before calling `GameManager.go_to_next_level()`.
+
+**Reason:**
+Door had no visual state difference between locked and unlocked, and no audio feedback when the player successfully exited a level.
+
+---
+
+## [2026-04-27] - Player hurt flash effect
+
+**Files Changed:**
+- scripts/player/Player.gd
+
+**Summary:**
+- Added `_start_hurt_flash()`: loops for the duration of `INVINCIBILITY_DURATION`, alternating sprite modulate between red (`Color(1, 0.25, 0.25)`) and semi-transparent white (`Color(1, 1, 1, 0.4)`) every 0.07 s. Resets to `Color.WHITE` after the last flash.
+- `take_damage()` calls `_start_hurt_flash()` immediately after `sprite.play("hurt")`.
+
+**Reason:**
+No visual indication that the player had taken damage beyond the hurt animation. The red flicker communicates the hit and makes the invincibility window visible.
+
+---
+
+## [2026-04-27] - Fix enemy health bar not depleting to zero on kill
+
+**Files Changed:**
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- `take_damage()`: moved `_update_health_bar()` call to run unconditionally before the `hp <= 0` branch. Previously it was only called in the `else` branch, so the bar was never updated when the killing blow was dealt.
+
+**Reason:**
+The enemy health bar showed the pre-death value instead of 0 when the slime was killed.
+
+---
+
+## [2026-04-27] - Fix HUD health bar not connecting to player
+
+**Files Changed:**
+- scripts/player/Player.gd
+- scripts/Hud.gd
+
+**Summary:**
+- `Player.gd`: added `add_to_group("player")` in `_ready()`. Code-based group registration is reliable regardless of scene load order; the `.tscn` `groups` property can fail for sub-scenes.
+- `Hud.gd`: rewrote `_connect_player()` to use `get_nodes_in_group("player")` and check `.is_empty()`. If the group is empty, `await get_tree().process_frame` suspends and retries next frame. Guards against double-connecting with `is_connected`.
+
+**Reason:**
+`get_first_node_in_group("player")` returned `null` when HUD's deferred call ran before Player had registered itself, causing the health bar to never receive the initial value or subsequent `hp_changed` signals.
+
+---
+
+## [2026-04-27] - Fix HUD HealthBar overlapping CoinLabel
+
+**Files Changed:**
+- scenes/ui/HUD.tscn
+
+**Summary:**
+- `CoinLabel`: changed `offset_top` from `0` to `28` so it sits below the health bar row.
+- `HealthBar`: unchanged position (offset 8–108 x, 8–22 y).
+
+**Reason:**
+Both nodes defaulted to the top-left corner, causing visual overlap.
+
+---
+
 ## [2026-04-27] - Player and enemy health bars
 
 **Files Changed:**
