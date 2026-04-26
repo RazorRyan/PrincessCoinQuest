@@ -19,6 +19,10 @@ region = Rect2(138, 132, 69, 44)
 atlas = ExtResource("2_gfjak")
 region = Rect2(207, 132, 69, 44)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_gfjak"]
+atlas = ExtResource("2_gfjak")
+region = Rect2(345, 220, 69, 44)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_npwbq"]
 atlas = ExtResource("2_gfjak")
 region = Rect2(138, 264, 69, 44)
@@ -104,6 +108,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_gfjak")
+}],
+"loop": true,
+"name": &"die",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_npwbq")
 }],
 "loop": true,
@@ -184,9 +196,8 @@ script = ExtResource("1_wr5hl")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=796953374]
 sprite_frames = SubResource("SpriteFrames_ro0t8")
-animation = &"hurt"
+animation = &"die"
 autoplay = "idle"
-frame_progress = 0.009749988
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=849687327]
 

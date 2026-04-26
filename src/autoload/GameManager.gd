@@ -19,11 +19,17 @@ func collect_coin() -> void:
 	if coins_collected >= total_coins:
 		all_coins_collected.emit()
 
+func restart_level() -> void:
+	coins_collected = 0
+	var current_level_path := "res://scenes/levels/Level%02d.tscn" % current_level
+	get_tree().change_scene_to_file(current_level_path)
+
 func go_to_next_level() -> void:
-	current_level += 1
-	var next_level_path := "res://scenes/levels/Level%02d.tscn" % current_level
+	var next_level := current_level + 1
+	var next_level_path := "res://scenes/levels/Level%02d.tscn" % next_level
 
 	if ResourceLoader.exists(next_level_path):
+		current_level = next_level
 		get_tree().change_scene_to_file(next_level_path)
 	else:
 		print("No more levels. Game complete.")

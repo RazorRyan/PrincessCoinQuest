@@ -3,22 +3,35 @@ extends CharacterBody2D
 const SPEED := 130.0
 const JUMP_VELOCITY := -320.0
 const ATTACK_DAMAGE := 1
+const KNOCKBACK_FORCE := 200.0
+const INVINCIBILITY_DURATION := 0.8
+
+@export var max_hp := 3
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
 
+var hp: int
 var is_attacking := false
+var is_invincible := false
+var is_hurt := false
+var is_dying := false
 
 func _ready() -> void:
+	hp = max_hp
 	attack_area.monitoring = false
 
 func _physics_process(delta: float) -> void:
+	if is_dying:
+		move_and_slide()
+		return
+
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
 	var direction := Input.get_axis("move_left", "move_right")
 
-	if not is_attacking:
+	if not is_attacking and not is_hurt and not is_dying:
 		velocity.x = direction * SPEED
 
 		if direction != 0:
@@ -35,7 +48,7 @@ func _physics_process(delta: float) -> void:
 	update_animation(direction)
 
 func update_animation(direction: float) -> void:
-	if is_attacking:
+	if is_attacking or is_hurt or is_dying:
 		return
 
 	if not is_on_floor():
@@ -57,3 +70,31 @@ func attack() -> void:
 	await get_tree().create_timer(0.25).timeout
 	attack_area.monitoring = false
 	is_attacking = false
+
+func take_damage(amount: int, from_position: Vector2) -> void:
+	if is_invincible or is_dying:
+		return
+
+	hp -= amount
+	is_invincible = true
+	is_hurt = true
+
+	var knockback_dir := (global_position - from_position).normalized()
+	velocity = knockback_dir * KNOCKBACK_FORCE
+
+	sprite.play("hurt")
+
+	if hp <= 0:
+		die()
+		return
+
+	await get_tree().create_timer(INVINCIBILITY_DURATION).timeout
+	is_invincible = false
+	is_hurt = false
+
+func die() -> void:
+	is_dying = true
+	velocity = Vector2.ZERO
+	sprite.play("die")
+	await get_tree().create_timer(1.0).timeout
+	GameManager.restart_level()
