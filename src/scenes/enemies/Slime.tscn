@@ -3,6 +3,14 @@
 [ext_resource type="Script" uid="uid://ji8wjcdin6s0" path="res://scripts/enemies/Slime.gd" id="1_im251"]
 [ext_resource type="Texture2D" uid="uid://dlc8gxp4rfg14" path="res://assets/enemies/slime_green.png" id="2_qf73r"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_qf73r"]
+atlas = ExtResource("2_qf73r")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfcr1"]
+atlas = ExtResource("2_qf73r")
+region = Rect2(48, 48, 24, 24)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_kvn5r"]
 atlas = ExtResource("2_qf73r")
 region = Rect2(72, 0, 24, 24)
@@ -17,6 +25,22 @@ region = Rect2(48, 24, 24, 24)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_xdv7e"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qf73r")
+}],
+"loop": true,
+"name": &"die",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfcr1")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 10.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_kvn5r")
@@ -39,15 +63,14 @@ size = Vector2(11.666667, 15)
 size = Vector2(15.333334, 14.96875)
 
 [node name="Slime" type="CharacterBody2D" unique_id=1885526685]
-scale = Vector2(3, 3)
+scale = Vector2(2, 2)
 script = ExtResource("1_im251")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1235527516]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_xdv7e")
-animation = &"walk"
+animation = &"hurt"
 autoplay = "walk"
-frame_progress = 0.25657815
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1203670601]
 position = Vector2(-0.16666651, 4.5)

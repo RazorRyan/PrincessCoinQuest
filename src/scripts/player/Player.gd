@@ -5,6 +5,7 @@ const JUMP_VELOCITY := -320.0
 const ATTACK_DAMAGE := 1
 const KNOCKBACK_FORCE := 160.0
 const INVINCIBILITY_DURATION := 0.4
+const ATTACK_COOLDOWN := 0.45
 
 @export var max_hp := 3
 
@@ -16,10 +17,13 @@ var is_attacking := false
 var is_invincible := false
 var is_hurt := false
 var is_dying := false
+var can_attack := true
+var _attack_hits := {}
 
 func _ready() -> void:
 	hp = max_hp
 	attack_area.monitoring = false
+	attack_area.body_entered.connect(_on_attack_area_body_entered)
 
 func _physics_process(delta: float) -> void:
 	if is_dying:
@@ -41,7 +45,7 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_just_pressed("jump") and is_on_floor():
 			velocity.y = JUMP_VELOCITY
 
-		if Input.is_action_just_pressed("attack"):
+		if Input.is_action_just_pressed("attack") and can_attack:
 			attack()
 
 	move_and_slide()
@@ -60,16 +64,22 @@ func update_animation(direction: float) -> void:
 
 func attack() -> void:
 	is_attacking = true
+	can_attack = false
+	_attack_hits.clear()
 	sprite.play("attack")
 	attack_area.monitoring = true
-
-	for body in attack_area.get_overlapping_bodies():
-		if body.has_method("take_damage"):
-			body.take_damage(ATTACK_DAMAGE)
 
 	await get_tree().create_timer(0.25).timeout
 	attack_area.monitoring = false
 	is_attacking = false
+
+	await get_tree().create_timer(ATTACK_COOLDOWN).timeout
+	can_attack = true
+
+func _on_attack_area_body_entered(body: Node2D) -> void:
+	if is_attacking and not body in _attack_hits and body.has_method("take_damage"):
+		_attack_hits[body] = true
+		body.take_damage(ATTACK_DAMAGE)
 
 func take_damage(amount: int, from_position: Vector2) -> void:
 	if is_invincible or is_dying:

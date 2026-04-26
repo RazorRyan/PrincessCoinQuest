@@ -1,3 +1,85 @@
+## [2026-04-26] - Fix Slime raycast positions for 3x parent scale
+
+**Files Changed:**
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- Changed `wall_check.position.x` from `18 * direction` to `6 * direction` (local units).
+- Changed `wall_check.target_position` from `Vector2(18 * direction, 0)` to `Vector2(8 * direction, 0)`.
+- Changed `floor_check.position.x` from `12 * direction` to `7 * direction`.
+- Added temporary debug `print` to verify `is_colliding()` results at runtime.
+
+**Reason:**
+The Slime root node has `scale = Vector2(3, 3)`. RayCast2D positions are in local space, which Godot multiplies by 3 for world space. The old values (18 local = 54 world) placed the ray origin 36 px past the body edge (17.5 px world half-width), so the ray started embedded behind or inside wall tiles. A ray that starts past a surface never "enters" it, so `is_colliding()` always returned false and the slime never flipped. The new values (6 local = 18 world) align the ray origin with the body edge and extend it 8 local (24 world) px ahead, correctly detecting tiles in the slime's path.
+
+---
+
+## [2026-04-26] - Slime hurt and die animations
+
+**Files Changed:**
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- Replaced modulate tween with `_play_hurt()`: sets `_is_hurt = true`, plays "hurt" animation for 0.3s, then clears the flag and resumes "walk".
+- `die()` now sets `_is_dying = true`, zeroes velocity, plays "die", waits 0.6s (timer used because the animation loops), then `queue_free()`.
+- Added `_is_hurt` and `_is_dying` state guards. `sprite.play("walk")` is blocked while either is true. `_physics_process` returns early while `_is_dying`. `take_damage` is a no-op while `_is_dying`.
+
+**Reason:**
+`sprite.play("walk")` was called unconditionally every physics frame, immediately overriding any hurt or die animation on the same frame it was triggered. State flags prevent the walk call from stomping the new animations.
+
+---
+
+## [2026-04-26] - Fix slime dying in one hit and stuck-on-wall stutter
+
+**Files Changed:**
+- scripts/player/Player.gd
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- Player: Added `_attack_hits` dictionary, cleared at the start of each swing. `_on_attack_area_body_entered` checks if the body is already in the set before dealing damage, preventing the same body being hit multiple times in one attack window.
+- Slime: Added `force_raycast_update()` calls after updating `wall_check` and `floor_check` positions, ensuring `is_colliding()` reflects the current-frame position rather than the previous frame's stale result.
+- Slime: Added `_knockback_timer`. When hit, `velocity.x` is set to the knockback impulse and `_knockback_timer = 0.25`. Patrol velocity (`velocity.x = speed * direction`) is only written when the timer has expired, preventing the knockback from being overwritten immediately.
+- Slime: Increased `_flip_cooldown` reset to `0.5s`.
+
+**Reason:**
+- `body_entered` fires each time a body enters the area. If a slime left and re-entered the attack area within the 0.25s monitoring window (e.g. due to knockback), it received a second hit and could die from a single player attack.
+- Godot's RayCast2D auto-updates before `_physics_process`, so repositioning a ray mid-frame and reading `is_colliding()` returned stale data from the old position. `force_raycast_update()` ensures results match the new position.
+- `velocity.x = speed * direction` ran unconditionally every frame, immediately overwriting knockback velocity so the hit impulse had zero visible effect and could push the slime back into a wall.
+
+---
+
+## [2026-04-26] - Fix player attack not hitting slime; fix slime flip stutter
+
+**Files Changed:**
+- scripts/player/Player.gd
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- Replaced `get_overlapping_bodies()` poll in `attack()` with a `body_entered` signal connection on `AttackArea`. Damage is now dealt in `_on_attack_area_body_entered` whenever a valid body enters the active attack area.
+- Added `_flip_cooldown` timer to Slime. After any direction flip, flipping is blocked for 0.3s, preventing the slime from toggling direction every frame while physically in contact with a wall.
+
+**Reason:**
+- `get_overlapping_bodies()` returns an empty array when called the same frame `monitoring` is enabled because the physics engine hasn't processed the new overlap yet. Using `body_entered` fires correctly as soon as the overlap is detected.
+- Without a flip cooldown, the slime remained embedded against a wall for several frames after flipping, causing the flip condition to re-trigger immediately and locking the slime in place.
+
+---
+
+## [2026-04-26] - Combat polish: attack cooldown, slime knockback and hurt flash
+
+**Files Changed:**
+- scripts/player/Player.gd
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- Added `ATTACK_COOLDOWN = 0.45s` const and `can_attack` flag to Player. Attack input is blocked while the cooldown is active. Cooldown starts after the swing animation ends.
+- Slime: added `@export var knockback_force := 90.0`. On `take_damage`, applies an x-velocity impulse away from the attacker using `direction_to`.
+- Slime: added `_flash_hurt()` — creates a Tween that shifts `sprite.modulate` to red (0.05s) then back to white (0.15s) for visual hit feedback without requiring a hurt animation frame.
+
+**Reason:**
+Attack spam had no cooldown so a single button press could register as multiple hits. Slime had no visual or physical reaction to being hit, making combat feel unresponsive.
+
+---
+
 ## [2026-04-26] - Restart level on player death
 
 **Files Changed:**
