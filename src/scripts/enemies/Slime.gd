@@ -13,24 +13,30 @@ var direction := -1
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+	else:
+		velocity.y = 0
 
-	velocity.x = direction * speed
+	wall_check.target_position = Vector2(18 * direction, 0)
+	floor_check.position.x = 12 * direction
+	floor_check.target_position = Vector2(0, 24)
+	
+	print("wall:", wall_check.is_colliding(), " floor:", floor_check.is_colliding())
 
-	if wall_check.is_colliding() or not floor_check.is_colliding():
+	if is_on_floor() and (wall_check.is_colliding() or not floor_check.is_colliding()):
 		flip_direction()
 
+	velocity.x = speed * direction
 	move_and_slide()
-	sprite.play("walk")
+
+	if sprite.sprite_frames and sprite.sprite_frames.has_animation("walk"):
+		sprite.play("walk")
 
 func flip_direction() -> void:
 	direction *= -1
 	sprite.flip_h = direction > 0
-	wall_check.scale.x *= -1
-	floor_check.position.x *= -1
 
 func take_damage(amount: int) -> void:
 	hp -= amount
-	sprite.play("hurt")
 
 	if hp <= 0:
 		die()

@@ -1,13 +1,70 @@
 [gd_scene format=3 uid="uid://cjpp1xrsvq5sy"]
 
 [ext_resource type="Script" uid="uid://bynjd1oqwvjsq" path="res://scripts/pickups/Coin.gd" id="1_wemvp"]
+[ext_resource type="Texture2D" uid="uid://b0njbcnwuv56u" path="res://assets/pickups/coin.png" id="2_4fox7"]
+[ext_resource type="AudioStream" uid="uid://b5nlercaf25r2" path="res://assets/sfx/coin.wav" id="3_liqem"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crv34"]
+atlas = ExtResource("2_4fox7")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h06wd"]
+atlas = ExtResource("2_4fox7")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_obiav"]
+atlas = ExtResource("2_4fox7")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_287gi"]
+atlas = ExtResource("2_4fox7")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7rhay"]
+atlas = ExtResource("2_4fox7")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x20xc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crv34")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h06wd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_obiav")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_287gi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7rhay")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wemvp"]
+radius = 4.1231055
 
 [node name="Coin" type="Area2D" unique_id=445336302]
+scale = Vector2(2, 2)
 script = ExtResource("1_wemvp")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=807285019]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_x20xc")
+autoplay = "default"
+frame_progress = 0.44089738
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1490501099]
 shape = SubResource("CircleShape2D_wemvp")
+
+[node name="PickupSound" type="AudioStreamPlayer2D" parent="." unique_id=1183978825]
+position = Vector2(-7, -4)
+stream = ExtResource("3_liqem")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=568158827]
