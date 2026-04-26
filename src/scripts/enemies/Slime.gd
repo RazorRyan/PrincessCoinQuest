@@ -45,8 +45,6 @@ func _physics_process(delta: float) -> void:
 	wall_check.force_raycast_update()
 	floor_check.force_raycast_update()
 
-	# DEBUG — remove once patrol is confirmed working
-	print("dir:", direction, " wall_ray:", wall_check.is_colliding(), " on_wall:", is_on_wall(), " floor:", floor_check.is_colliding())
 
 	if _flip_cooldown <= 0.0 and is_on_floor() and (_hit_wall_tile() or not floor_check.is_colliding()):
 		flip_direction()
@@ -99,5 +97,5 @@ func die() -> void:
 	queue_free()
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	if body.has_method("take_damage"):
+	if body.name == "Player" and body.has_method("take_damage"):
 		body.take_damage(damage, global_position)

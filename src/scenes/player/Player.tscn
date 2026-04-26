@@ -210,5 +210,5 @@ shape = SubResource("RectangleShape2D_gfjak")
 [node name="hurt_sfx" type="AudioStreamPlayer2D" parent="." unique_id=994233344]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1126217118]
-position = Vector2(-7, 5)
+position = Vector2(0, 5)
 shape = SubResource("RectangleShape2D_wr5hl")

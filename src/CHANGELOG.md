@@ -1,3 +1,35 @@
+## [2026-04-26] - Fix player self-damage on attack; fix Slime Hitbox targeting
+
+**Files Changed:**
+- scripts/player/Player.gd
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- `_on_attack_area_body_entered`: added `if body == self: return` as the first guard. Prevents the player from damaging themselves if AttackArea's collision mask includes the Player's own layer.
+- `_on_hitbox_body_entered`: changed `if body.has_method("take_damage")` to `if body.name == "Player" and body.has_method("take_damage")`. Prevents Slimes from accidentally damaging other Slimes or any other body that happens to have `take_damage`.
+
+**Reason:**
+When `AttackArea.monitoring` is enabled, Godot fires `body_entered` for every body currently overlapping the area — including the Player's own CharacterBody2D if the AttackArea mask includes the Player's physics layer. The `has_method("take_damage")` check passed because Player has that method, causing the player to deal damage to themselves on every attack. The `body == self` guard is unconditional and requires no collision layer changes. The Slime Hitbox issue was a separate over-broad `has_method` check that could hit any body with `take_damage`, including other Slimes.
+
+---
+
+## [2026-04-26] - Fix player floating above platforms
+
+**Files Changed:**
+- scripts/player/Player.gd
+
+**Summary:**
+- Added `floor_snap_length = 8.0` in `_ready()`. This prevents the 1–2 frame physics de-sync when the player walks over tile seams, where the character briefly loses floor contact and visually hops.
+
+**Scene adjustments required (in Godot editor):**
+- `CollisionShape2D` position.x: change from `-7` to `0` — removes an asymmetric left-shift that was causing uneven wall collision and visual misalignment.
+- `AnimatedSprite2D` offset.y: set to approximately `8` (tune visually) — compensates for transparent padding rows at the bottom of the warrior sprite sheet frames, aligning the visible feet with the physics floor contact point.
+
+**Reason:**
+The warrior sprite sheet has transparent padding at the bottom of each 44px frame. With no sprite offset set, the visible character feet were drawn above the collision shape's bottom edge, making the player appear to float. The x=-7 collision offset was a secondary misalignment. `floor_snap_length = 1.0` (Godot default) was too small to absorb tile-seam transitions, causing visible micro-hops during movement.
+
+---
+
 ## [2026-04-26] - Fix Slime raycast positions for 3x parent scale
 
 **Files Changed:**

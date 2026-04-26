@@ -24,6 +24,7 @@ func _ready() -> void:
 	hp = max_hp
 	attack_area.monitoring = false
 	attack_area.body_entered.connect(_on_attack_area_body_entered)
+	floor_snap_length = 8.0
 
 func _physics_process(delta: float) -> void:
 	if is_dying:
@@ -77,11 +78,13 @@ func attack() -> void:
 	can_attack = true
 
 func _on_attack_area_body_entered(body: Node2D) -> void:
+	if body == self:
+		return
 	if is_attacking and not body in _attack_hits and body.has_method("take_damage"):
 		_attack_hits[body] = true
 		body.take_damage(ATTACK_DAMAGE)
 
-func take_damage(amount: int, from_position: Vector2) -> void:
+func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
 	if is_invincible or is_dying:
 		return
 
@@ -89,8 +92,9 @@ func take_damage(amount: int, from_position: Vector2) -> void:
 	is_invincible = true
 	is_hurt = true
 
-	var knockback_dir := (global_position - from_position).normalized()
-	velocity = knockback_dir * KNOCKBACK_FORCE
+	if from_position != Vector2.ZERO:
+		var knockback_dir := (global_position - from_position).normalized()
+		velocity = knockback_dir * KNOCKBACK_FORCE
 
 	sprite.play("hurt")
 
