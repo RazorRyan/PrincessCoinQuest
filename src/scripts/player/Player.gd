@@ -13,6 +13,10 @@ signal hp_changed(current: int, maximum: int)
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
+@onready var _jump_sfx: AudioStreamPlayer = $jump_sfx
+@onready var _hurt_sfx: AudioStreamPlayer = $hurt_sfx
+@onready var _attack_sfx: AudioStreamPlayer = $attack_sfx
+@onready var _lose_sfx: AudioStreamPlayer = $lose_sfx
 
 var hp: int
 var is_attacking := false
@@ -49,6 +53,7 @@ func _physics_process(delta: float) -> void:
 
 		if Input.is_action_just_pressed("jump") and is_on_floor():
 			velocity.y = JUMP_VELOCITY
+			_jump_sfx.play()
 
 		if Input.is_action_just_pressed("attack") and can_attack:
 			attack()
@@ -72,6 +77,7 @@ func attack() -> void:
 	can_attack = false
 	_attack_hits.clear()
 	sprite.play("attack")
+	_attack_sfx.play()
 	attack_area.monitoring = true
 
 	await get_tree().create_timer(0.25).timeout
@@ -102,6 +108,7 @@ func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
 		velocity = knockback_dir * KNOCKBACK_FORCE
 
 	sprite.play("hurt")
+	_hurt_sfx.play()
 	_start_hurt_flash()
 
 	if hp <= 0:
@@ -126,5 +133,6 @@ func die() -> void:
 	is_dying = true
 	velocity = Vector2.ZERO
 	sprite.play("die")
+	_lose_sfx.play()
 	await get_tree().create_timer(1.0).timeout
 	GameManager.restart_level()

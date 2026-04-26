@@ -11,6 +11,7 @@ const HealthBarScene := preload("res://scenes/ui/EnemyHealthBar.tscn")
 @onready var wall_check: RayCast2D = $WallCheck
 @onready var floor_check: RayCast2D = $FloorCheck
 @onready var hitbox: Area2D = $Hitbox
+@onready var _splat_sfx: AudioStreamPlayer2D = $splat_sfx
 
 var direction := -1
 var _flip_cooldown := 0.0
@@ -19,6 +20,7 @@ var _is_hurt := false
 var _is_dying := false
 var _max_hp: int
 var _health_bar: ProgressBar
+var _splat_timer := 0.0
 
 func _ready() -> void:
 	_max_hp = hp
@@ -26,11 +28,17 @@ func _ready() -> void:
 	wall_check.hit_from_inside = true
 	_health_bar = HealthBarScene.instantiate()
 	add_child(_health_bar)
+	_splat_timer = randf_range(3.0, 6.0)
 
 func _physics_process(delta: float) -> void:
 	if _is_dying:
 		move_and_slide()
 		return
+
+	_splat_timer -= delta
+	if _splat_timer <= 0.0:
+		_splat_sfx.play()
+		_splat_timer = randf_range(3.0, 6.0)
 
 	if not is_on_floor():
 		velocity += get_gravity() * delta

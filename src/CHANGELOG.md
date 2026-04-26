@@ -1,3 +1,52 @@
+## [2026-04-27] - Fix SFX parser error and UID mismatches
+
+**Files Changed:**
+- scenes/player/Player.tscn
+- scenes/enemies/Slime.tscn
+- scripts/player/Player.gd
+- scripts/enemies/Slime.gd
+
+**Root Cause:**
+Three compounding issues prevented all SFX from playing:
+1. `preload()` consts in scripts caused a **Parser Error** at compile time (`lose.wav` UID not in Godot's import cache), preventing the entire script from loading — so no `.play()` call could ever execute.
+2. `lose.wav` UID in `Player.tscn` was wrong (`uid://bm8qf6vpymhib` vs actual `uid://deguctkj8x2r4`).
+3. `splat_double_quick.wav` UID in `Slime.tscn` was wrong (`uid://c7amf51hobfcp` vs actual `uid://bmopn73lu6eaq`).
+
+**Fix:**
+- Removed all `const _SFX_*` preloads from `Player.gd` and `Slime.gd`. They were redundant — the streams are already assigned via `stream = ExtResource(...)` in the `.tscn` files, and `preload()` triggers a parse-time filesystem check that fails if Godot's import cache is stale.
+- Removed corresponding `_ready()` stream assignment lines from both scripts.
+- Fixed `lose.wav` UID in `Player.tscn` to match the actual `.import` file.
+- Fixed `splat_double_quick.wav` UID in `Slime.tscn` to match the actual `.import` file.
+
+**Lesson:**
+`preload()` at the `const` level is evaluated at parse time. If the imported binary cache is missing or the UID doesn't match, it crashes the entire script — silently breaking all features in that file. Always use `.tscn` stream assignments or `load()` at runtime for audio resources added externally.
+
+---
+
+## [2026-04-27] - Implement full SFX system for player and slime
+
+**Files Changed:**
+- scenes/player/Player.tscn
+- scripts/player/Player.gd
+- scenes/enemies/Slime.tscn
+- scripts/enemies/Slime.gd
+
+**Summary:**
+- `Player.tscn`: Replaced `AudioStreamPlayer2D` nodes with `AudioStreamPlayer` (non-positional) for `jump_sfx`, `hurt_sfx`. Added `attack_sfx` and `lose_sfx` nodes. Added `ext_resource` entries for all four WAV files with their correct UIDs.
+- `Player.gd`: Added `const _SFX_*` preloads for all four audio files. Added `@onready` vars for all four nodes. In `_ready()`, assigns each stream via code (bypasses Godot .tscn caching). Added `.play()` calls: `_jump_sfx` on jump, `_attack_sfx` on attack, `_hurt_sfx` on `take_damage`, `_lose_sfx` on `die()`.
+- `Slime.tscn`: Added `ext_resource` for `splat_double_quick.wav`. Added `splat_sfx` `AudioStreamPlayer2D` node with stream assigned.
+- `Slime.gd`: Added `const _SFX_SPLAT` preload. Added `@onready var _splat_sfx`. Assigns stream in `_ready()`. Added `_splat_timer` that fires `_splat_sfx.play()` every 3–6 seconds while the slime is alive.
+
+**Root Cause:**
+- Player SFX nodes existed in the scene but had no streams assigned.
+- `attack_sfx` and `lose_sfx` nodes were entirely missing from the scene.
+- Slime had no audio nodes at all.
+- All `.play()` call sites had been removed from both scripts.
+- Using `AudioStreamPlayer` (non-positional) for player sounds avoids 2D audio listener distance attenuation issues.
+- Streams are assigned in `_ready()` via `preload` to guarantee they load regardless of `.tscn` editor cache state.
+
+---
+
 ## [2026-04-27] - Level complete message on door entry
 
 **Files Changed:**

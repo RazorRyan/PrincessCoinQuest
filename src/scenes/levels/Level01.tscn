@@ -203,12 +203,9 @@ position = Vector2(262, 107)
 [node name="Enemies" type="Node" parent="." unique_id=1784566422]
 
 [node name="Slime" parent="Enemies" unique_id=1885526685 instance=ExtResource("3_uq7hp")]
-position = Vector2(444.00003, 188)
+position = Vector2(447, 197)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1206467031]
-
-[node name="Player" parent="." unique_id=1579361341 instance=ExtResource("2_h7kxv")]
-position = Vector2(161, 115)
 
 [node name="ExitDoor" parent="." unique_id=1789859094 instance=ExtResource("3_a5anj")]
 texture_filter = 1
@@ -216,3 +213,6 @@ position = Vector2(57, 146)
 scale = Vector2(3, 3)
 
 [node name="Hud" parent="." unique_id=203162232 instance=ExtResource("4_uq7hp")]
+
+[node name="Player" parent="." unique_id=1740361640 instance=ExtResource("2_h7kxv")]
+position = Vector2(162, 123)

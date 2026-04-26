@@ -2,6 +2,10 @@
 
 [ext_resource type="Script" uid="uid://c0a5bxdosp3yx" path="res://scripts/player/Player.gd" id="1_wr5hl"]
 [ext_resource type="Texture2D" uid="uid://db4ua66chfn1n" path="res://assets/main-character/Warrior_Sheet-Effect.png" id="2_gfjak"]
+[ext_resource type="AudioStreamWAV" uid="uid://bf7d7lulc30cb" path="res://assets/sfx/jump.wav" id="3_jump"]
+[ext_resource type="AudioStreamWAV" uid="uid://c7b28hh81l1oy" path="res://assets/sfx/hurt.wav" id="4_hurt"]
+[ext_resource type="AudioStreamWAV" uid="uid://bnulvxje71nkw" path="res://assets/sfx/JDSherbert - Ultimate UI SFX Pack - Swipe - 1.wav" id="5_attack"]
+[ext_resource type="AudioStreamWAV" uid="uid://deguctkj8x2r4" path="res://assets/sfx/lose.wav" id="6_lose"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4kuee"]
 atlas = ExtResource("2_gfjak")
@@ -206,9 +210,17 @@ autoplay = "idle"
 position = Vector2(18, 0)
 shape = SubResource("RectangleShape2D_gfjak")
 
-[node name="jump_sfx" type="AudioStreamPlayer2D" parent="." unique_id=958603648]
+[node name="jump_sfx" type="AudioStreamPlayer" parent="." unique_id=958603648]
+stream = ExtResource("3_jump")
 
-[node name="hurt_sfx" type="AudioStreamPlayer2D" parent="." unique_id=994233344]
+[node name="hurt_sfx" type="AudioStreamPlayer" parent="." unique_id=994233344]
+stream = ExtResource("4_hurt")
+
+[node name="attack_sfx" type="AudioStreamPlayer" parent="." unique_id=770341122]
+stream = ExtResource("5_attack")
+
+[node name="lose_sfx" type="AudioStreamPlayer" parent="." unique_id=881452233]
+stream = ExtResource("6_lose")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1126217118]
 position = Vector2(0, 5)
