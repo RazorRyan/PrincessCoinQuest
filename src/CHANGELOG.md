@@ -1,3 +1,78 @@
+## [2026-04-27] - Fix player scale, jump height, and camera zoom
+
+**Files Changed:**
+- scenes/player/Player.tscn
+- scripts/player/Player.gd
+- scenes/levels/Level01.tscn
+
+**Root Cause:**
+`CharacterBody2D` root had `scale = Vector2(2, 2)`. This doubled the collision shape in world space (14×31 → 28×62px = 3.9 tiles tall). Jump velocity of -320 only reached ~52px max height but row-9 platforms sat 64px above the ground — unreachable. The camera had no zoom, making 16px tiles look tiny.
+
+**Changes:**
+
+| File | Change | Reason |
+|---|---|---|
+| `Player.tscn` | Removed `scale = Vector2(2, 2)` from root | Body collision is now native 14×31px ≈ 2 tiles tall ✓ |
+| `Player.gd` | `JUMP_VELOCITY` -320 → -400 | Max jump height 52px → 82px — can comfortably reach all platforms |
+| `Player.gd` | `SPEED` 130 → 160 | Feels responsive at native scale |
+| `Level01.tscn` | `Camera2D zoom = Vector2(2, 2)` | 16px tiles render 32px on screen — same visual result, correct physics |
+| `Level01.tscn` | Camera limits set (0–1280 / -64–512) | Prevents camera leaving level bounds |
+| `Level01.tscn` | Coin02 y: 94→120, Coin03 y: 110→120 | Were floating 30px above Platform A surface |
+| `Level01.tscn` | Player start: (27,181) → (48,188) | Clean column-3 spawn, feet near ground surface |
+
+**Level Design Spacing Rules (for future levels):**
+- Tile size: 16px world units
+- Standard jump (ground to platform): max 4–5 tile gap (64–80px) with JUMP_VELOCITY -400
+- Platform width: min 4 tiles so slimes can patrol and player can land
+- Horizontal gap between platforms: max 4 tiles (64px) for comfortable leaps
+- Min vertical clearance under ceilings: 3 tiles (48px) — player body is ~2 tiles tall
+- Camera zoom=2 is always set on Camera2D in every level
+
+**How to Test:**
+1. Run `Level01.tscn` — player should look correctly sized (~2 tiles tall in the zoomed view)
+2. Jump from ground to any platform — all platforms are reachable
+3. Movement feels responsive, not floaty
+
+---
+
+## [2026-04-27] - Level01 full redesign — "Princess's First Adventure"
+
+**Files Changed:**
+- scenes/levels/Level01.tscn
+
+**Level Layout:**
+All tiles are 16×16px. Ground surface at pixel y=208 (tile row 13).
+
+| Area | Tile row | Tile X range | Surface Y |
+|---|---|---|---|
+| Ground floor | 13 | 0–77 | 208 |
+| Platform A | 10 | 6–10 | 160 |
+| Platform B | 9 | 14–19 | 144 |
+| Platform C (highest) | 8 | 25–30 | 128 |
+| Platform D | 10 | 35–40 | 160 |
+| Platform E | 9 | 46–52 | 144 |
+| Platform F (exit) | 10 | 58–65 | 160 |
+
+**Objects Placed:**
+- 12 coins — spread across ground path and all platforms to guide the player left→right
+- 3 slimes — Slime01 on Platform B (272,132), Slime02 on Platform D (592,148), Slime03 on Platform E (784,132)
+- ExitDoor — on Platform F at (1016,128), scale (2,2), door bottom aligned to platform surface
+- Player — spawn at (40,187) on ground, near left edge
+
+**Camera:**
+- Camera2D moved from scene root to child of Player node — now follows the player automatically
+- `position_smoothing_enabled = true`, speed 8.0
+
+**How to Test:**
+1. Open and run `Level01.tscn`
+2. Player spawns on the left ground — run right
+3. Jump up to platforms — coins are on each platform and ground path
+4. Defeat or dodge the 3 slimes
+5. Collect all 12 coins — exit door opens
+6. Reach Platform F and walk into the exit door — Level Complete dialog appears
+
+---
+
 ## [2026-04-27] - Level Complete dialog system
 
 **Files Changed:**

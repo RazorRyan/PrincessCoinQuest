@@ -3,7 +3,7 @@ extends CharacterBody2D
 const HealthBarScene := preload("res://scenes/ui/EnemyHealthBar.tscn")
 
 @export var speed := 45.0
-@export var hp := 2
+@export var hp := 1
 @export var damage := 1
 @export var knockback_force := 90.0
 

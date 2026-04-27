@@ -1,13 +1,14 @@
 extends CharacterBody2D
 
-const SPEED := 130.0
-const JUMP_VELOCITY := -320.0
+const SPEED := 160.0
+const JUMP_VELOCITY := -400.0
 const ATTACK_DAMAGE := 1
 const KNOCKBACK_FORCE := 160.0
 const INVINCIBILITY_DURATION := 0.4
 const ATTACK_COOLDOWN := 0.45
 
 @export var max_hp := 3
+@export var fall_death_y := 400.0
 
 signal hp_changed(current: int, maximum: int)
 
@@ -37,6 +38,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if is_dying:
 		move_and_slide()
+		return
+
+	if global_position.y > fall_death_y:
+		die()
 		return
 
 	if not is_on_floor():

@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://opwh0leivwii"]
 
 [ext_resource type="Script" uid="uid://dwr53ktx4ypyt" path="res://scripts/levels/LevelTemplate.gd" id="1_rd8yo"]
-[ext_resource type="AudioStreamMP3" uid="uid://c50bj67usxiiu" path="res://assets/music/CoinCrownCaravan_SAI.mp3" id="5_music"]
 [ext_resource type="PackedScene" uid="uid://cjpp1xrsvq5sy" path="res://scenes/pickups/Coin.tscn" id="2_a5anj"]
 [ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="2_h7kxv"]
 [ext_resource type="Texture2D" uid="uid://bdgq2dypdyt82" path="res://assets/tilesets/world_tileset.png" id="2_uq7hp"]
 [ext_resource type="PackedScene" uid="uid://b8qlkk50hjyws" path="res://scenes/levels/ExitDoor.tscn" id="3_a5anj"]
 [ext_resource type="PackedScene" uid="uid://ds7rruqncwjgy" path="res://scenes/enemies/Slime.tscn" id="3_uq7hp"]
 [ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="4_uq7hp"]
+[ext_resource type="AudioStream" uid="uid://c50bj67usxiiu" path="res://assets/music/CoinCrownCaravan_SAI.mp3" id="5_music"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4om3"]
 texture = ExtResource("2_uq7hp")
@@ -182,7 +182,6 @@ sources/0 = SubResource("TileSetAtlasSource_n4om3")
 [node name="LevelTemplate" type="Node2D" unique_id=1682050012]
 script = ExtResource("1_rd8yo")
 level_music = ExtResource("5_music")
-music_loop_end = 60.0
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=1322428494]
 
@@ -191,31 +190,77 @@ music_loop_end = 60.0
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer" unique_id=1658198731]
 
 [node name="TileMap" type="TileMap" parent="." unique_id=573334070]
+position = Vector2(0, 2)
 tile_set = SubResource("TileSet_dthn1")
 format = 2
 layer_0/name = "Background"
-layer_0/tile_data = PackedInt32Array(917528, 0, 0, 917529, 0, 0, 917530, 0, 0, 917531, 0, 0, 917532, 0, 0, 917533, 0, 0, 917527, 0, 0, 851991, 65536, 1, 851997, 65536, 1, 720912, 0, 0, 786449, 0, 0, 720911, 0, 0, 786448, 0, 0, 786447, 0, 0, 851983, 0, 0, 917519, 0, 0, 917520, 0, 0, 917521, 0, 0, 917522, 0, 0, 917523, 0, 0, 917524, 0, 0, 917525, 0, 0, 917526, 0, 0, 851984, 0, 0, 851985, 0, 0, 851986, 0, 0, 720910, 0, 0, 720909, 0, 0, 720908, 0, 0, 720907, 0, 0, 720906, 0, 0, 720905, 0, 0, 720904, 0, 0, 720903, 0, 0, 720902, 0, 0)
+layer_0/tile_data = PackedInt32Array(851968, 0, 0, 851969, 0, 0, 851970, 0, 0, 851971, 0, 0, 851972, 0, 0, 851973, 0, 0, 851974, 0, 0, 851975, 0, 0, 851976, 0, 0, 851977, 0, 0, 851978, 0, 0, 851979, 0, 0, 851980, 0, 0, 851981, 0, 0, 851982, 0, 0, 851983, 0, 0, 851984, 0, 0, 851985, 0, 0, 851986, 0, 0, 851987, 0, 0, 851988, 0, 0, 851989, 0, 0, 851990, 0, 0, 851991, 0, 0, 851992, 0, 0, 851993, 0, 0, 851994, 0, 0, 851995, 0, 0, 851996, 0, 0, 851997, 0, 0, 851998, 0, 0, 851999, 0, 0, 852000, 0, 0, 852001, 0, 0, 852002, 0, 0, 852003, 0, 0, 852004, 0, 0, 852005, 0, 0, 852006, 0, 0, 852007, 0, 0, 852008, 0, 0, 852009, 0, 0, 852010, 0, 0, 852011, 0, 0, 852012, 0, 0, 852013, 0, 0, 852014, 0, 0, 852015, 0, 0, 852016, 0, 0, 852017, 0, 0, 852018, 0, 0, 852019, 0, 0, 852020, 0, 0, 852021, 0, 0, 852022, 0, 0, 852023, 0, 0, 852024, 0, 0, 852025, 0, 0, 852026, 0, 0, 852027, 0, 0, 852028, 0, 0, 852029, 0, 0, 852030, 0, 0, 852031, 0, 0, 852032, 0, 0, 852033, 0, 0, 852034, 0, 0, 852035, 0, 0, 852036, 0, 0, 852037, 0, 0, 852038, 0, 0, 852039, 0, 0, 852040, 0, 0, 852041, 0, 0, 852042, 0, 0, 852043, 0, 0, 852044, 0, 0, 852045, 0, 0, 589838, 0, 0, 589839, 0, 0, 589840, 0, 0, 589841, 0, 0, 589842, 0, 0, 589843, 0, 0, 524313, 0, 0, 524314, 0, 0, 524315, 0, 0, 524316, 0, 0, 524317, 0, 0, 524318, 0, 0, 655395, 0, 0, 655396, 0, 0, 655397, 0, 0, 655398, 0, 0, 655399, 0, 0, 655400, 0, 0, 589870, 0, 0, 589871, 0, 0, 589872, 0, 0, 589873, 0, 0, 589874, 0, 0, 589875, 0, 0, 589876, 0, 0, 655418, 0, 0, 655419, 0, 0, 655420, 0, 0, 655421, 0, 0, 655422, 0, 0, 655423, 0, 0, 655424, 0, 0, 655425, 0, 0, 524294, 0, 0, 524295, 0, 0, 524296, 0, 0, 524297, 0, 0, 524298, 0, 0)
 layer_1/name = "Mid"
-layer_1/tile_data = PackedInt32Array(917528, 0, 0, 917529, 0, 0, 917530, 0, 0, 917531, 0, 0, 917532, 0, 0, 917533, 0, 0)
 
 [node name="Coins" type="Node" parent="." unique_id=1647129722]
 
-[node name="Coin" parent="Coins" unique_id=445336302 instance=ExtResource("2_a5anj")]
-position = Vector2(262, 107)
+[node name="Coin01" parent="Coins" unique_id=200000001 instance=ExtResource("2_a5anj")]
+position = Vector2(111, 198)
+
+[node name="Coin02" parent="Coins" unique_id=200000002 instance=ExtResource("2_a5anj")]
+position = Vector2(120, 120)
+
+[node name="Coin03" parent="Coins" unique_id=200000003 instance=ExtResource("2_a5anj")]
+position = Vector2(152, 120)
+
+[node name="Coin04" parent="Coins" unique_id=200000004 instance=ExtResource("2_a5anj")]
+position = Vector2(208, 198)
+
+[node name="Coin05" parent="Coins" unique_id=200000005 instance=ExtResource("2_a5anj")]
+position = Vector2(256, 134)
+
+[node name="Coin06" parent="Coins" unique_id=200000006 instance=ExtResource("2_a5anj")]
+position = Vector2(304, 134)
+
+[node name="Coin07" parent="Coins" unique_id=200000007 instance=ExtResource("2_a5anj")]
+position = Vector2(416, 118)
+
+[node name="Coin08" parent="Coins" unique_id=200000008 instance=ExtResource("2_a5anj")]
+position = Vector2(464, 118)
+
+[node name="Coin09" parent="Coins" unique_id=200000009 instance=ExtResource("2_a5anj")]
+position = Vector2(512, 198)
+
+[node name="Coin10" parent="Coins" unique_id=200000010 instance=ExtResource("2_a5anj")]
+position = Vector2(752, 134)
+
+[node name="Coin11" parent="Coins" unique_id=200000011 instance=ExtResource("2_a5anj")]
+position = Vector2(800, 134)
+
+[node name="Coin12" parent="Coins" unique_id=200000012 instance=ExtResource("2_a5anj")]
+position = Vector2(960, 150)
 
 [node name="Enemies" type="Node" parent="." unique_id=1784566422]
 
-[node name="Slime" parent="Enemies" unique_id=1885526685 instance=ExtResource("3_uq7hp")]
-position = Vector2(447, 197)
+[node name="Slime01" parent="Enemies" unique_id=200000020 instance=ExtResource("3_uq7hp")]
+position = Vector2(272, 132)
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1206467031]
+[node name="Slime02" parent="Enemies" unique_id=200000021 instance=ExtResource("3_uq7hp")]
+position = Vector2(592, 148)
+
+[node name="Slime03" parent="Enemies" unique_id=200000022 instance=ExtResource("3_uq7hp")]
+position = Vector2(784, 132)
 
 [node name="ExitDoor" parent="." unique_id=1789859094 instance=ExtResource("3_a5anj")]
 texture_filter = 1
-position = Vector2(57, 146)
-scale = Vector2(3, 3)
+position = Vector2(1016, 128)
+scale = Vector2(2, 2)
 
 [node name="Hud" parent="." unique_id=203162232 instance=ExtResource("4_uq7hp")]
 
 [node name="Player" parent="." unique_id=1740361640 instance=ExtResource("2_h7kxv")]
-position = Vector2(162, 123)
+position = Vector2(48, 188)
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1206467031]
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+limit_left = 0
+limit_right = 1280
+limit_top = -64
+limit_bottom = 512
