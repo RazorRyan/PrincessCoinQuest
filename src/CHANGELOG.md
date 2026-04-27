@@ -1,4 +1,28 @@
-## [2026-04-27] - Fix music file path after rename + wire audio bus layout
+## [2026-04-27] - Level Complete dialog system
+
+**Files Changed:**
+- scripts/ui/LevelCompleteUI.gd (new)
+- scripts/ui/LevelCompleteUI.gd.uid (new)
+- scenes/ui/LevelCompleteUI.tscn (new)
+- scripts/levels/LevelTemplate.gd
+- scripts/levels/ExitDoor.gd
+
+**What Changed:**
+- Created `LevelCompleteUI.tscn` — a `CanvasLayer` (layer 10) with a centered Panel containing a VBoxContainer with a "Level Complete!" Label, a "Replay" Button, and a "Next Level" Button (placeholder).
+- `LevelCompleteUI.gd` — Replay calls `get_tree().reload_current_scene()`; Next Level is a no-op placeholder.
+- `ExitDoor.gd` — after the 0.4s SFX delay, instantiates `LevelCompleteUI` and adds it to the current scene. Removed the direct `GameManager.go_to_next_level()` call.
+- `LevelTemplate.gd` — connects to `GameManager.level_completed` signal in `_ready()`. On trigger, stops the music player if it is playing.
+
+**How to Test:**
+1. Run `Level01.tscn`.
+2. Collect all coins (exit door opens).
+3. Walk into the exit door — success SFX plays, music stops, "Level Complete!" dialog appears.
+4. Click **Replay** — level restarts from the beginning.
+5. Click **Next Level** — nothing happens (placeholder).
+
+---
+
+
 
 **Files Changed:**
 - scenes/levels/Level01.tscn

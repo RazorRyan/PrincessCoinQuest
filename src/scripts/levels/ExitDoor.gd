@@ -1,5 +1,7 @@
 extends Area2D
 
+const LevelCompleteUI = preload("res://scenes/ui/LevelCompleteUI.tscn")
+
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var success_sfx: AudioStreamPlayer2D = $success_sfx
 
@@ -20,4 +22,5 @@ func _on_body_entered(body: Node) -> void:
 		if not success_sfx.playing:
 			success_sfx.play()
 		await get_tree().create_timer(0.4).timeout
-		GameManager.go_to_next_level()
+		var ui := LevelCompleteUI.instantiate()
+		get_tree().current_scene.add_child(ui)
