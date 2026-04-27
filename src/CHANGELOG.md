@@ -1,3 +1,71 @@
+## [2026-04-27] - Fix tile offset (Mid TileMapLayer position drift)
+
+**Files Changed:**
+- scenes/levels/Level01.tscn *(must be fixed inside Godot editor — see below)*
+
+**Root Cause:**
+After the TileMap → TileMapLayer migration, the `Mid` TileMapLayer node (child of the
+`TileMap` Node2D wrapper) accumulated an incorrect position offset. The offset grew
+across editor sessions: `(40, 0)` → `(40, 56)` → `(40, 103)` because the file was
+being text-edited while Godot had it open, causing each editor save to re-apply a
+growing drag delta.
+
+The parent `TileMap` Node2D already provides the correct world offset `(0, 2)`.
+`Mid` must have `position = (0, 0)`. The non-zero offset shifts every tile's visual
+rendering AND its physics collision body, causing the player and enemies to be
+misaligned with the ground.
+
+**Fix (Godot editor only):**
+1. Open `Level01.tscn`
+2. Scene panel → expand `TileMap` → select `Mid`
+3. Inspector → Node2D > Transform > Position → set **X = 0, Y = 0**
+4. Ctrl+S
+
+**Z-ordering analysis:**
+The scene tree order already provides correct draw order. No explicit `z_index`
+values are required:
+
+| Tree position | Node | Draw order |
+|---|---|---|
+| 1st | ParallaxBackground | Behind everything ✓ |
+| 2nd | TileMap (Node2D) | Ground layer ✓ |
+| 3rd | Coins | Above tiles ✓ |
+| 4th | Enemies | Above tiles ✓ |
+| 5th | ExitDoor | Above enemies ✓ |
+| 6th | Hud (CanvasLayer) | Always on top (CanvasLayer) ✓ |
+| 7th | Player | Topmost Node2D object ✓ |
+
+No gameplay nodes are inside ParallaxLayer. Scene hierarchy is correct.
+
+**How to Test:**
+1. Run `Level01.tscn` — player must spawn standing on solid ground
+2. Walk the full level — all tiles visible, no gaps, no floating platforms
+3. All platforms are solid (no fall-through)
+4. Background is behind all gameplay objects
+
+---
+
+**Z-Index reference table (for all future levels):**
+
+| Node | z_index | Note |
+|---|---|---|
+| ParallaxBackground | -10 | Always behind |
+| TileMap / TileMapLayer | 0 (default) | Ground layer |
+| Coins container children | 0 (default) | Above tiles via tree order |
+| Enemies container children | 0 (default) | Above tiles via tree order |
+| ExitDoor | 1 | Explicit, above tiles |
+| Player | 2 | Always in front |
+| HUD (CanvasLayer) | — | CanvasLayer ignores z_index, always on top |
+
+**How to Test:**
+1. Run `Level01.tscn` — ground tiles must appear at the correct position (player spawns on solid ground, not floating or falling through).
+2. Walk the full level — no tile gaps, no hover tiles.
+3. Player must appear in front of Slime when overlapping.
+4. Background sprite must be fully behind all tiles and objects.
+5. HUD must be on top at all times.
+
+---
+
 ## [2026-04-27] - Fix player scale, jump height, and camera zoom
 
 **Files Changed:**

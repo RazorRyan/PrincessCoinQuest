@@ -9,6 +9,7 @@
 script = ExtResource("1_vyyr7")
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=1322428494]
+z_index = -10
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground" unique_id=1811821273]
 
