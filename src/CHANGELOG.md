@@ -1,3 +1,56 @@
+## [2026-04-27] - Fix Z-index rendering order (objects hidden behind tiles)
+
+**Files Changed:**
+- scenes/levels/Level01.tscn
+- scenes/pickups/Coin.tscn
+- scenes/enemies/Slime.tscn
+
+**Root Cause:**
+The scene hierarchy was already correct — all gameplay nodes (Player, Coins, Enemies,
+ExitDoor) were direct children of the root Node2D, NOT inside ParallaxBackground.
+
+The actual bug was `Mid (TileMapLayer)` having `z_index = 1` set in the Godot editor.
+This caused the ground tiles to render ON TOP of all gameplay objects (Player, Coins,
+Slime, ExitDoor) which had z_index = 0. Objects appeared "behind" the tileset.
+
+Additionally, no explicit z_index was set on any gameplay objects, so rendering order
+relied entirely on tree position.
+
+**Changes:**
+
+| File | Node | Change | Reason |
+|---|---|---|---|
+| `Level01.tscn` | `Mid (TileMapLayer)` | Removed `z_index = 1` | Tiles must render BEHIND gameplay objects |
+| `Level01.tscn` | `ParallaxBackground` | `z_index = -10` | Explicitly behind all other nodes |
+| `Level01.tscn` | `Player` | `z_index = 5` | Renders in front of tiles, enemies, coins |
+| `Level01.tscn` | `ExitDoor` | `z_index = 4` | Renders above tiles |
+| `Level01.tscn` | `Player` position | `127.00002` → `127` | Clean up editor float noise |
+| `Coin.tscn` | `Coin (root)` | `z_index = 6` | Coins render above all, visible when near tiles |
+| `Slime.tscn` | `Slime (root)` | `z_index = 5` | Same level as player, above tiles |
+
+**Z-Index table (final, all levels):**
+
+| Node | z_index | Note |
+|---|---|---|
+| ParallaxBackground | -10 | Always behind |
+| TileMap (Node2D wrapper) | 0 (default) | Ground layer |
+| Background (TileMapLayer) | 0 (default) | Decorative tiles |
+| Mid (TileMapLayer) | 0 (default) | Collision tiles — MUST be 0, not 1 |
+| ExitDoor | 4 | Above tiles |
+| Player | 5 | Above tiles and enemies |
+| Slime | 5 (set in Slime.tscn) | Same level as player |
+| Coin | 6 (set in Coin.tscn) | Topmost gameplay object |
+| HUD (CanvasLayer) | — | CanvasLayer, always on top regardless |
+
+**How to Test:**
+1. Run `Level01.tscn` — player must be visible on screen, not hidden by tiles
+2. Slime must be visible patrolling on platforms
+3. All coins must be visible and floating above the ground/platform tiles
+4. ExitDoor must be visible
+5. Background sprite must be behind all tiles and objects
+
+---
+
 ## [2026-04-27] - Fix tile offset (Mid TileMapLayer position drift)
 
 **Files Changed:**

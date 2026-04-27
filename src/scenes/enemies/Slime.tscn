@@ -65,6 +65,7 @@ size = Vector2(15.333334, 14.96875)
 
 [node name="Slime" type="CharacterBody2D" unique_id=1885526685]
 scale = Vector2(2, 2)
+z_index = 5
 script = ExtResource("1_im251")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1235527516]
