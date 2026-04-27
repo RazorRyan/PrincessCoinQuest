@@ -212,15 +212,19 @@ shape = SubResource("RectangleShape2D_gfjak")
 
 [node name="jump_sfx" type="AudioStreamPlayer" parent="." unique_id=958603648]
 stream = ExtResource("3_jump")
+bus = &"SFX"
 
 [node name="hurt_sfx" type="AudioStreamPlayer" parent="." unique_id=994233344]
 stream = ExtResource("4_hurt")
+bus = &"SFX"
 
 [node name="attack_sfx" type="AudioStreamPlayer" parent="." unique_id=770341122]
 stream = ExtResource("5_attack")
+bus = &"SFX"
 
 [node name="lose_sfx" type="AudioStreamPlayer" parent="." unique_id=881452233]
 stream = ExtResource("6_lose")
+bus = &"SFX"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1126217118]
 position = Vector2(0, 5)

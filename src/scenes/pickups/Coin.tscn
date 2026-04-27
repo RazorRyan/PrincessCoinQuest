@@ -66,5 +66,6 @@ shape = SubResource("CircleShape2D_wemvp")
 [node name="PickupSound" type="AudioStreamPlayer2D" parent="." unique_id=1183978825]
 position = Vector2(-7, -4)
 stream = ExtResource("3_liqem")
+bus = &"SFX"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=568158827]

@@ -1,3 +1,49 @@
+## [2026-04-27] - Fix music file path after rename + wire audio bus layout
+
+**Files Changed:**
+- scenes/levels/Level01.tscn
+- project.godot
+
+**What Changed:**
+- Updated `Level01.tscn` ext_resource path from `CoinCrownCaravan.mp3` to `CoinCrownCaravan_SAI.mp3` to match the renamed file.
+- Set `buses/default_bus_layout` in `project.godot` to `res://in_game_default_audio_setup.tres`. Previously empty, so the SFX and Music buses never existed at runtime and volume settings had no effect.
+
+**How to Test:**
+- Run `Level01.tscn` — music plays and respects the Music bus volume. SFX respect the SFX bus volume.
+
+---
+
+## [2026-04-27] - Route all SFX to SFX bus, music to Music bus
+
+**Files Changed:**
+- scenes/player/Player.tscn
+- scenes/enemies/Slime.tscn
+- scenes/levels/ExitDoor.tscn
+- scenes/pickups/Coin.tscn
+- scripts/levels/LevelTemplate.gd
+
+**What Changed:**
+- Added `bus = &"SFX"` to all SFX `AudioStreamPlayer` / `AudioStreamPlayer2D` nodes (jump, hurt, attack, lose, splat, success, coin pickup).
+- Dynamically created music `AudioStreamPlayer` in `LevelTemplate.gd` now sets `bus = &"Music"`.
+
+---
+
+## [2026-04-27] - Level 1 music: CoinCrownCaravan_SAI (first 60s on repeat)
+
+**Files Changed:**
+- scripts/levels/LevelTemplate.gd
+- scenes/levels/Level01.tscn
+
+**What Changed:**
+- Added optional music support to `LevelTemplate.gd` via `@export var level_music: AudioStream` and `@export var music_loop_end: float = 60.0`.
+- On `_ready()`, if `level_music` is set, an `AudioStreamPlayer` is created dynamically and a `Timer` fires every `music_loop_end` seconds to restart playback from the beginning — achieving a clean loop of the first 60 seconds only.
+- `Level01.tscn` now sets `level_music = CoinCrownCaravan_SAI.mp3` and `music_loop_end = 60.0`.
+
+**How to Test:**
+- Open and run `Level01.tscn` in Godot. Music should start immediately and loop back to the beginning after 60 seconds.
+
+---
+
 ## [2026-04-27] - Fix SFX parser error and UID mismatches
 
 **Files Changed:**

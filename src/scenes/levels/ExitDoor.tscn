@@ -32,3 +32,4 @@ shape = SubResource("RectangleShape2D_kmp0d")
 
 [node name="success_sfx" type="AudioStreamPlayer2D" parent="." unique_id=520187344]
 stream = ExtResource("4_sfx")
+bus = &"SFX"
