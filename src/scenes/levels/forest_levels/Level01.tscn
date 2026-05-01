@@ -1,16 +1,16 @@
 [gd_scene format=4 uid="uid://opwh0leivwii"]
 
-[ext_resource type="Script" uid="uid://dwr53ktx4ypyt" path="res://scripts/levels/LevelTemplate.gd" id="1_rd8yo"]
-[ext_resource type="PackedScene" uid="uid://cjpp1xrsvq5sy" path="res://scenes/pickups/Coin.tscn" id="2_a5anj"]
-[ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="2_h7kxv"]
-[ext_resource type="Texture2D" uid="uid://bdgq2dypdyt82" path="res://assets/tilesets/world_tileset.png" id="2_uq7hp"]
-[ext_resource type="PackedScene" uid="uid://b8qlkk50hjyws" path="res://scenes/levels/ExitDoor.tscn" id="3_a5anj"]
-[ext_resource type="PackedScene" uid="uid://ds7rruqncwjgy" path="res://scenes/enemies/Slime.tscn" id="3_uq7hp"]
-[ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="4_uq7hp"]
-[ext_resource type="AudioStream" uid="uid://c50bj67usxiiu" path="res://assets/music/CoinCrownCaravan_SAI.mp3" id="5_music"]
+[ext_resource type="Script" uid="uid://dwr53ktx4ypyt" path="res://scripts/levels/LevelTemplate.gd" id="1_a7t00"]
+[ext_resource type="AudioStream" uid="uid://c50bj67usxiiu" path="res://assets/music/CoinCrownCaravan_SAI.mp3" id="2_o1ymn"]
+[ext_resource type="Texture2D" uid="uid://bdgq2dypdyt82" path="res://assets/tilesets/world_tileset.png" id="3_n721c"]
+[ext_resource type="PackedScene" uid="uid://cjpp1xrsvq5sy" path="res://scenes/pickups/Coin.tscn" id="4_44mbi"]
+[ext_resource type="PackedScene" uid="uid://ds7rruqncwjgy" path="res://scenes/enemies/Slime.tscn" id="5_tphce"]
+[ext_resource type="PackedScene" uid="uid://b8qlkk50hjyws" path="res://scenes/levels/ExitDoor.tscn" id="6_qratm"]
+[ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="7_wapmv"]
+[ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="8_sm5eu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4om3"]
-texture = ExtResource("2_uq7hp")
+texture = ExtResource("3_n721c")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, -8, -8, -8, 8, 8, 8)
 1:0/0 = 0
@@ -179,9 +179,9 @@ texture = ExtResource("2_uq7hp")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_n4om3")
 
-[node name="LevelTemplate" type="Node2D" unique_id=1682050012]
-script = ExtResource("1_rd8yo")
-level_music = ExtResource("5_music")
+[node name="Level01" type="Node2D" unique_id=1682050012]
+script = ExtResource("1_a7t00")
+level_music = ExtResource("2_o1ymn")
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=1322428494]
 
@@ -204,38 +204,38 @@ tile_set = SubResource("TileSet_dthn1")
 
 [node name="Coins" type="Node" parent="." unique_id=1647129722]
 
-[node name="Coin01" parent="Coins" unique_id=200000001 instance=ExtResource("2_a5anj")]
+[node name="Coin01" parent="Coins" unique_id=200000001 instance=ExtResource("4_44mbi")]
 position = Vector2(224, 306)
 
-[node name="Coin02" parent="Coins" unique_id=200000002 instance=ExtResource("2_a5anj")]
+[node name="Coin02" parent="Coins" unique_id=200000002 instance=ExtResource("4_44mbi")]
 position = Vector2(139, 225)
 
-[node name="Coin03" parent="Coins" unique_id=200000003 instance=ExtResource("2_a5anj")]
+[node name="Coin03" parent="Coins" unique_id=200000003 instance=ExtResource("4_44mbi")]
 position = Vector2(210, 225)
 
-[node name="Coin04" parent="Coins" unique_id=200000004 instance=ExtResource("2_a5anj")]
+[node name="Coin04" parent="Coins" unique_id=200000004 instance=ExtResource("4_44mbi")]
 position = Vector2(367, 307)
 
-[node name="Coin05" parent="Coins" unique_id=200000005 instance=ExtResource("2_a5anj")]
+[node name="Coin05" parent="Coins" unique_id=200000005 instance=ExtResource("4_44mbi")]
 position = Vector2(279, 242)
 
-[node name="Coin06" parent="Coins" unique_id=200000006 instance=ExtResource("2_a5anj")]
+[node name="Coin06" parent="Coins" unique_id=200000006 instance=ExtResource("4_44mbi")]
 position = Vector2(359, 242)
 
 [node name="Enemies" type="Node" parent="." unique_id=1784566422]
 
-[node name="Slime01" parent="Enemies" unique_id=200000020 instance=ExtResource("3_uq7hp")]
+[node name="Slime01" parent="Enemies" unique_id=200000020 instance=ExtResource("5_tphce")]
 position = Vector2(318, 227)
 
-[node name="ExitDoor" parent="." unique_id=1789859094 instance=ExtResource("3_a5anj")]
+[node name="ExitDoor" parent="." unique_id=1789859094 instance=ExtResource("6_qratm")]
 z_index = 4
 texture_filter = 1
 position = Vector2(264, 141)
 scale = Vector2(2, 2)
 
-[node name="Hud" parent="." unique_id=203162232 instance=ExtResource("4_uq7hp")]
+[node name="Hud" parent="." unique_id=203162232 instance=ExtResource("7_wapmv")]
 
-[node name="Player" parent="." unique_id=1740361640 instance=ExtResource("2_h7kxv")]
+[node name="Player" parent="." unique_id=1740361640 instance=ExtResource("8_sm5eu")]
 z_index = 5
 position = Vector2(127, 293)
 

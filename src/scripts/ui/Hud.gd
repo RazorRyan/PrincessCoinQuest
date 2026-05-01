@@ -2,11 +2,9 @@ extends CanvasLayer
 
 @onready var coin_label: Label = $CoinLabel
 @onready var health_bar: ProgressBar = $HealthBar
-@onready var level_complete_label: Label = $LevelCompleteLabel
 
 func _ready() -> void:
 	GameManager.coins_changed.connect(_on_coins_changed)
-	GameManager.level_completed.connect(_on_level_completed)
 	call_deferred("_connect_player")
 
 func _connect_player() -> void:
@@ -25,6 +23,3 @@ func _on_coins_changed(current: int, total: int) -> void:
 
 func _on_player_hp_changed(current: int, maximum: int) -> void:
 	health_bar.value = float(current) / float(maximum)
-
-func _on_level_completed() -> void:
-	level_complete_label.visible = true

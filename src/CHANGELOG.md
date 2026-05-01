@@ -1,3 +1,35 @@
+## [2026-05-01] - Refactor HUD — health bar moved to top-right, removed redundant LevelCompleteLabel
+
+**Files Changed:**
+- `scenes/ui/HUD.tscn`
+- `scripts/ui/Hud.gd`
+- `scripts/Hud.gd` *(duplicate — kept in sync)*
+
+**What changed:**
+
+| Element | Before | After |
+|---|---|---|
+| `HealthBar` position | Top-left (offset 8,8 → 108,22) | Top-right (anchor=1, offset -118,8 → -8,22) |
+| `CoinLabel` position | offset_top=28 (below health bar) | offset_top=8 (top-left, 8px from edge) |
+| `LevelCompleteLabel` | Present, shown via signal | **Removed** — LevelCompleteUI handles this |
+
+**HUD node removed:** `LevelCompleteLabel` — was set `visible=true` by `_on_level_completed()`.
+This is now fully handled by `LevelCompleteUI.tscn` which is instantiated by `ExitDoor.gd`.
+Keeping both caused a duplicate "Level Complete" display.
+
+**Hud.gd cleanup:**
+- Removed `@onready var level_complete_label`
+- Removed `GameManager.level_completed.connect(_on_level_completed)`
+- Removed `func _on_level_completed()`
+
+**How to Test:**
+1. Run any level — health bar appears in the **top-right corner**
+2. Coin counter appears in the **top-left corner**
+3. Take damage — health bar shrinks from the right
+4. Complete level — only the `LevelCompleteUI` panel appears (no extra label)
+
+---
+
 ## [2026-05-01] - Replace Main Menu buttons with image-based TextureButtons
 
 **Files Changed:**
