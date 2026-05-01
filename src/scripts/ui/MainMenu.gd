@@ -9,7 +9,7 @@ func _ready() -> void:
 
 func _on_start_pressed() -> void:
 	music.stop()
-	GameManager.start_game()
+	get_tree().change_scene_to_file("res://scenes/ui/IntroMovie.tscn")
 
 func _on_options_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/LevelSelect.tscn")

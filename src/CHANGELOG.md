@@ -1,3 +1,62 @@
+## [2026-05-01] - Fix IntroMovie fade logic and image size
+
+**Files Changed:**
+- `scripts/ui/IntroMovie.gd`
+- `scenes/ui/IntroMovie.tscn`
+
+**Bugs fixed:**
+
+| # | Bug | Root Cause | Fix |
+|---|---|---|---|
+| 1 | Image faded in then instantly vanished | Fade direction was inverted — `_fade(1.0, 0.0)` jumped overlay to opaque instantly; `_fade(0.0, duration)` then faded to transparent (wrong direction for fade-out) | Fade-in now calls `_fade(0.0, FADE_DURATION)` (overlay → transparent = reveal); fade-out calls `_fade(1.0, FADE_DURATION)` (overlay → black = hide); skip jump also corrected |
+| 2 | Images appeared too large / cropped | `stretch_mode = 6` (KEEP_ASPECT_COVERED) fills the screen and crops edges | Changed to `stretch_mode = 5` (KEEP_ASPECT_CENTERED) — shows full image centred with black letterbox bars |
+
+---
+
+## [2026-05-01] - Intro Movie cinematic sequence
+
+**Files Changed:**
+- `scenes/ui/IntroMovie.tscn` *(new)*
+- `scripts/ui/IntroMovie.gd` *(new)*
+- `scripts/ui/MainMenu.gd`
+
+**Scene Structure:**
+```
+IntroMovie (Control) — full-screen, script=IntroMovie.gd
+├── MovieImage   (TextureRect)  — anchor=full, expand=1, stretch=KEEP_ASPECT_COVERED
+├── FadeOverlay  (ColorRect)    — black, starts opaque, mouse_filter=IGNORE
+└── SkipLabel    (Label)        — anchored bottom-centre, starts alpha=0
+```
+
+**Playback Logic:**
+- 7 images loaded from `res://assets/backgrounds/Intro_Movie_N.png`
+- Frame durations: frames 1–4 = 2.5 s, frames 5–6 = 3.0 s, frame 7 = waits for input
+- Each transition: fade out (0.5 s) → swap texture → fade in (0.5 s)
+- Subtle zoom: each frame scales from `1.0 → 1.05` over its display duration (Tween, EASE_OUT)
+- Frame 7 fades in the "Press any key to start!" label; waits for any input then calls `GameManager.start_game()`
+
+**Skip Behaviour:**
+- Any `InputEventKey`, `InputEventMouseButton` (press only), or `InputEventScreenTouch` sets `_skip_requested = true`
+- The `_interruptible_wait()` helper polls this flag each process frame — exits immediately when set
+- Skip jumps directly to frame 7 with a clean fade transition; does NOT abort mid-fade
+- On frame 7 the same input triggers `_load_first_level()` instead of skipping
+
+**Fade Implementation:**
+- `_fade(target_alpha, duration)` creates a one-shot Tween on `FadeOverlay.color:a` and `await`s it
+- Start state: FadeOverlay alpha = 1.0 (black screen), ensures clean entry from Main Menu
+
+**MainMenu.gd change:**
+- `_on_start_pressed()` now routes to `res://scenes/ui/IntroMovie.tscn` instead of calling `GameManager.start_game()` directly
+- `IntroMovie.gd` calls `GameManager.start_game()` at the end, maintaining the same downstream flow
+
+**Test Flow:**
+1. Launch → Main Menu
+2. Click **Start Game** → black screen → frames 1–7 cycle with fade/zoom
+3. Any key mid-sequence → skips to frame 7
+4. Frame 7 displays "Press any key to start!" → any key → fades to black → Level 1 loads
+
+---
+
 ## [2026-05-01] - Cheat: permanent invincibility toggle in Level Select
 
 **Files Changed:**
