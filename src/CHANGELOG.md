@@ -1,3 +1,123 @@
+## [2026-05-01] - Cheat: permanent invincibility toggle in Level Select
+
+**Files Changed:**
+- `autoload/GameManager.gd`
+- `scripts/ui/LevelSelect.gd`
+- `scripts/player/Player.gd`
+- `scenes/ui/LevelSelect.tscn`
+
+**What changed:**
+- `GameManager.cheat_invincible: bool` added — persists across level loads
+- `LevelSelect.tscn` — new `CheckButton` node (`InvincibleToggle`) added above the Back button; label reads "INVINCIBLE MODE"
+- `LevelSelect.gd` — reads current flag into toggle on open; `toggled` signal writes back to `GameManager.cheat_invincible`
+- `Player.gd` `take_damage()` — guard now: `if _power_up_active or is_invincible or is_dying or GameManager.cheat_invincible: return`
+
+**How to use:**
+1. From Main Menu → Options → Level Select screen
+2. Toggle **INVINCIBLE MODE** on
+3. Choose any level — player cannot take damage for the whole session
+4. Toggle off to restore normal gameplay (takes effect immediately in-game)
+
+---
+
+## [2026-05-01] - Music speeds up during invincibility power-up
+
+**Files Changed:**
+- `scripts/player/Player.gd`
+- `scripts/levels/LevelTemplate.gd`
+
+**What changed:**
+- `activate_invincibility()` calls `_set_music_pitch(1.3)` — 30% faster
+- Timer expiry calls `_set_music_pitch(1.0)` — restores normal speed
+- `_set_music_pitch()` finds the level music player via the `"music_players"` group (fast path), falls back to a full scene-tree scan for any `AudioStreamPlayer` on the Music bus
+- `LevelTemplate._start_music()` — music player is now added to the `"music_players"` group so it is found instantly
+- `LevelTemplate._on_level_completed()` — resets `pitch_scale = 1.0` before stopping, so pitch does not carry over on level restart
+
+---
+
+## [2026-05-01] - Fix invincibility power-up bugs
+
+**Files Changed:**
+- `scripts/powerups/InvinciblePowerUp.gd`
+- `scripts/player/Player.gd`
+- `scenes/levels/forest_levels/Level03.tscn`
+
+**Bugs fixed:**
+
+| # | Bug | Root Cause | Fix |
+|---|---|---|---|
+| 1 | Power-up never detected player | Level03 instance had `scale = Vector2(0.05, 0.05)` overriding the scene root, shrinking the CircleShape2D collision radius from 6 px to 0.6 px | Removed the per-instance scale override from Level03.tscn |
+| 2 | Character did not turn yellow on pickup | `_process` wrote `sprite.scale = Vector2(pulse, pulse)` (~1.0), overriding the editor-assigned `scale = Vector2(0.05, 0.05)` and corrupting sprite size | Store `_base_scale` in `_ready()`, apply as `sprite.scale = _base_scale * pulse` |
+| 3 | Yellow glow wiped immediately by hurt-flash | `_start_hurt_flash()` coroutine unconditionally set `sprite.modulate = Color.WHITE` at the end | Added `if not _power_up_active:` guard before the modulate reset |
+
+---
+
+## [2026-05-01] - Level Select screen + power-up placed in Level 3
+
+**Files Changed:**
+- `scenes/ui/LevelSelect.tscn` *(new)*
+- `scripts/ui/LevelSelect.gd` *(new)*
+- `autoload/GameManager.gd`
+- `scripts/ui/MainMenu.gd`
+- `scenes/levels/forest_levels/Level03.tscn`
+
+**What changed:**
+- `GameManager.load_level_at_index(index)` added — resets coins and loads any level by index without going through the menu
+- `LevelSelect.tscn` — full-screen Control with the MainMenu background, dark overlay, PixelOperator8-Bold title, and buttons for Level 1 / 2 / 3 + Back
+- `LevelSelect.gd` — connects buttons to `GameManager.load_level_at_index()`; Back returns to MainMenu
+- `MainMenu.gd` `_on_options_pressed()` — now opens `res://scenes/ui/LevelSelect.tscn` instead of doing nothing
+- `Level03.tscn` — `InvinciblePowerUp` instance added to a `PowerUps` container node at `Vector2(348, 148)`, before the four-slime gauntlet near the exit
+
+---
+
+## [2026-05-01] - Add Invincibility Power-Up system
+
+**Files Changed:**
+- `scenes/powerups/InvinciblePowerUp.tscn` *(new)*
+- `scripts/powerups/InvinciblePowerUp.gd` *(new)*
+- `scripts/player/Player.gd`
+
+**Scene structure:**
+```
+InvinciblePowerUp (Area2D)
+├── AnimatedSprite2D  ← PowerUp_Invincibility.png, pulses via sin() in _process
+├── CollisionShape2D  ← CircleShape2D radius=12, scale=0.5
+└── PickupSound       ← AudioStreamPlayer2D, power_up.wav on SFX bus
+```
+
+**InvinciblePowerUp.gd behaviour:**
+- Pulses with a ±8% scale sine wave while idle
+- On `body_entered("Player")`:
+  - Calls `player.activate_invincibility()`
+  - Plays pickup sound, hides sprite, disables collision
+  - Waits for sound to finish → `queue_free()`
+
+**Player.gd changes:**
+
+| Addition | Detail |
+|---|---|
+| `var _power_up_active := false` | Separate flag from hurt iframes |
+| `var _power_up_timer := 0.0` | Countdown in `_physics_process` |
+| `func activate_invincibility()` | Sets active=true, timer=10.0, modulate=yellow |
+| `_physics_process` timer tick | Resets active + `sprite.modulate=WHITE` when expired |
+| `take_damage` guard | `if _power_up_active or is_invincible or is_dying: return` |
+
+**Design notes:**
+- `_power_up_active` is intentionally separate from `is_invincible` (hurt iframes).
+  This prevents hurt-flash logic from running during power-up and avoids timer conflicts.
+- Hurt flash uses `sprite.modulate`; during power-up `take_damage` returns early so
+  no flash conflict occurs.
+- Yellow glow (`Color(1, 1, 0.4)`) resets to `Color.WHITE` when power-up expires.
+
+**How to Test:**
+1. Instance `InvinciblePowerUp.tscn` in a level (drag into scene, place near player)
+2. Run level — power-up pulses gently
+3. Walk over it — pickup sound plays, sprite disappears
+4. Player turns yellow — cannot take damage for 10 seconds
+5. After 10 seconds — player returns to normal colour, damage works again
+
+---
+
 ## [2026-05-01] - Refactor HUD — health bar moved to top-right, removed redundant LevelCompleteLabel
 
 **Files Changed:**

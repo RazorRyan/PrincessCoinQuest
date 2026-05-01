@@ -15,6 +15,7 @@ func _ready() -> void:
 
 func _on_level_completed() -> void:
 	if _music_player and _music_player.playing:
+		_music_player.pitch_scale = 1.0
 		_music_player.stop()
 
 func _start_music() -> void:
@@ -23,6 +24,7 @@ func _start_music() -> void:
 	_music_player = AudioStreamPlayer.new()
 	_music_player.stream = level_music
 	_music_player.bus = &"Music"
+	_music_player.add_to_group("music_players")
 	add_child(_music_player)
 	_music_player.play()
 	var timer := Timer.new()

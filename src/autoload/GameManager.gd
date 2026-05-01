@@ -3,6 +3,7 @@ extends Node
 var coins_collected: int = 0
 var total_coins: int = 0
 var current_level_index: int = 0
+var cheat_invincible: bool = false
 
 var levels: Array[String] = [
 	"res://scenes/levels/forest_levels/Level01.tscn",
@@ -49,3 +50,9 @@ func go_to_next_level() -> void:
 		get_tree().change_scene_to_file(levels[current_level_index])
 	else:
 		print("No more levels. Game complete.")
+
+func load_level_at_index(index: int) -> void:
+	coins_collected = 0
+	total_coins = 0
+	current_level_index = index
+	get_tree().change_scene_to_file(levels[index])

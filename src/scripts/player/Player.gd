@@ -27,6 +27,9 @@ var is_dying := false
 var can_attack := true
 var _attack_hits := {}
 
+var _power_up_active := false
+var _power_up_timer := 0.0
+
 func _ready() -> void:
 	hp = max_hp
 	add_to_group("player")
@@ -35,7 +38,35 @@ func _ready() -> void:
 	floor_snap_length = 8.0
 	hp_changed.emit(hp, max_hp)
 
+func activate_invincibility() -> void:
+	_power_up_active = true
+	_power_up_timer = 10.0
+	sprite.modulate = Color(1.0, 1.0, 0.4, 1.0)
+	_set_music_pitch(1.3)
+
+func _set_music_pitch(pitch: float) -> void:
+	for node in get_tree().get_nodes_in_group("music_players"):
+		if node is AudioStreamPlayer:
+			node.pitch_scale = pitch
+			return
+	# Fallback: search all AudioStreamPlayer nodes on the Music bus
+	_find_and_set_pitch(get_tree().root, pitch)
+
+func _find_and_set_pitch(node: Node, pitch: float) -> void:
+	if node is AudioStreamPlayer and node.bus == &"Music":
+		node.pitch_scale = pitch
+		return
+	for child in node.get_children():
+		_find_and_set_pitch(child, pitch)
+
 func _physics_process(delta: float) -> void:
+	if _power_up_active:
+		_power_up_timer -= delta
+		if _power_up_timer <= 0.0:
+			_power_up_active = false
+			sprite.modulate = Color.WHITE
+			_set_music_pitch(1.0)
+
 	if is_dying:
 		move_and_slide()
 		return
@@ -100,7 +131,7 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 		body.take_damage(ATTACK_DAMAGE)
 
 func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
-	if is_invincible or is_dying:
+	if _power_up_active or is_invincible or is_dying or GameManager.cheat_invincible:
 		return
 
 	hp -= amount
@@ -132,7 +163,8 @@ func _start_hurt_flash() -> void:
 		await get_tree().create_timer(flash_interval).timeout
 		sprite.modulate = Color(1.0, 1.0, 1.0, 0.4)
 		await get_tree().create_timer(flash_interval).timeout
-	sprite.modulate = Color.WHITE
+	if not _power_up_active:
+		sprite.modulate = Color.WHITE
 
 func die() -> void:
 	is_dying = true
