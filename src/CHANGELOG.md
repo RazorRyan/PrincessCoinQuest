@@ -1,3 +1,22 @@
+## [2026-05-01] - Add intro music to IntroMovie
+
+**Files Changed:**
+- `scenes/ui/IntroMovie.tscn`
+- `scripts/ui/IntroMovie.gd`
+
+**What changed:**
+- `IntroMusic` (`AudioStreamPlayer`) node added to `IntroMovie.tscn`
+  - Stream: `CoinFallKingdom_IntroMovie.mp3`
+  - `autoplay = false`, `volume_db = -8.0`, `bus = "Music"`
+- `IntroMovie.gd` — `intro_music.play(12.0)` called in `_ready()` — `play(offset)` tells Godot to start playback 12 seconds into the track, matching the desired musical entry point
+- `_load_first_level()` — uses a parallel Tween to fade the overlay to black **and** fade `volume_db` from -8 → -80 simultaneously over `FADE_DURATION`, then calls `intro_music.stop()` before loading the level — clean audio exit with no pop
+- Music stops automatically on skip because `_load_first_level()` is always the exit path (both normal end and skip both call it)
+
+**How `play(12.0)` works:**
+`AudioStreamPlayer.play(from_position)` accepts a playback offset in seconds. Passing `12.0` starts the stream at the 12-second mark of the audio file, skipping the intro buildup of the track.
+
+---
+
 ## [2026-05-01] - Change default background clear color to black
 
 **Files Changed:**

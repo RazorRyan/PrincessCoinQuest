@@ -11,15 +11,15 @@ const FRAMES: Array[String] = [
 ]
 
 # Duration each frame stays visible (full seconds, excluding fade time)
-const FRAME_DURATIONS: Array[float] = [2.5, 2.5, 2.5, 2.5, 3.0, 3.0, 0.0]
+const FRAME_DURATIONS: Array[float] = [7.0, 7.0, 7.0, 7.0, 7.0, 7.0, 0.0]
 const FADE_DURATION := 0.5
 
 @onready var movie_image: TextureRect = $MovieImage
 @onready var fade_overlay: ColorRect = $FadeOverlay
 @onready var skip_label: Label = $SkipLabel
+@onready var intro_music: AudioStreamPlayer = $IntroMusic
 
 var _current_frame := 0
-var _skip_requested := false
 var _on_last_frame := false
 var _waiting_for_input := false
 
@@ -27,19 +27,16 @@ func _ready() -> void:
 	fade_overlay.color = Color(0, 0, 0, 1)
 	movie_image.scale = Vector2.ONE
 	skip_label.modulate.a = 0.0
+	intro_music.play(0.0)
 	_play_sequence()
 
 func _input(event: InputEvent) -> void:
+	if not _waiting_for_input:
+		return
 	if event is InputEventMouseButton and not event.pressed:
 		return
-	if _waiting_for_input:
-		# Last frame: click or tap starts the game
-		if event is InputEventMouseButton or event is InputEventScreenTouch:
-			_load_first_level()
-		return
-	if event is InputEventKey or event is InputEventMouseButton or event is InputEventScreenTouch:
-		if not _skip_requested:
-			_skip_requested = true
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
+		_load_first_level()
 
 # ── Main sequence ─────────────────────────────────────────────────────────────
 
@@ -57,17 +54,9 @@ func _play_sequence() -> void:
 			_waiting_for_input = true
 			return  # Stop loop — input handler takes over
 
-		# Wait while visible (interruptible)
+		# Wait while visible
 		var wait_time: float = FRAME_DURATIONS[_current_frame]
-		await _interruptible_wait(wait_time)
-
-		if _skip_requested:
-			# Jump straight to last frame
-			_skip_requested = false
-			_current_frame = FRAMES.size() - 1
-			# Fade OUT to black before showing frame 7
-			await _fade(1.0, FADE_DURATION)
-			continue
+		await get_tree().create_timer(wait_time).timeout
 
 		# Fade OUT: overlay goes from transparent (alpha=0) → black (alpha=1)
 		await _fade(1.0, FADE_DURATION)
@@ -91,16 +80,13 @@ func _fade_label(label: Label, target_alpha: float, duration: float) -> void:
 	tween.tween_property(label, "modulate:a", target_alpha, duration)
 	await tween.finished
 
-func _interruptible_wait(seconds: float) -> void:
-	var elapsed := 0.0
-	while elapsed < seconds:
-		if _skip_requested:
-			return
-		elapsed += get_process_delta_time()
-		await get_tree().process_frame
 
 func _load_first_level() -> void:
+	# Fade out music and overlay simultaneously
 	var tween := create_tween()
+	tween.set_parallel(true)
 	tween.tween_property(fade_overlay, "color:a", 1.0, FADE_DURATION)
+	tween.tween_property(intro_music, "volume_db", -80.0, FADE_DURATION)
 	await tween.finished
+	intro_music.stop()
 	GameManager.start_game()

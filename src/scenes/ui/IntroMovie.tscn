@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/IntroMovie.gd" id="1_scr"]
 [ext_resource type="FontFile" uid="uid://c1sruh2ugrjnr" path="res://assets/fonts/PixelOperator8.ttf" id="2_fnt"]
 [ext_resource type="Texture2D" uid="uid://dk07sqv1nd45i" path="res://assets/backgrounds/Intro_Movie_1.png" id="3_img"]
+[ext_resource type="AudioStream" uid="uid://m6jj7ilraf8j" path="res://assets/music/CoinFallKingdom_IntroMovie.mp3" id="4_mus"]
 
 [node name="IntroMovie" type="Control"]
 layout_mode = 3
@@ -57,3 +58,9 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 modulate = Color(1, 1, 1, 0)
+
+[node name="IntroMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_mus")
+autoplay = false
+volume_db = -8.0
+bus = &"Music"
