@@ -1,3 +1,24 @@
+## [2026-05-01] - Change default background clear color to black
+
+**Files Changed:**
+- `project.godot`
+
+**What changed:**
+- `rendering/environment/defaults/default_clear_color` changed from `Color(0.722, 0.871, 0.961, 1)` (default blue) to `Color(0, 0, 0, 1)` (pure black)
+
+**Why:**
+Any area not covered by a scene background (empty space beyond camera limits, IntroMovie letterbox bars, level edges) previously showed the engine's default sky blue. Pure black is correct for a dark fantasy platformer and matches the IntroMovie FadeOverlay.
+
+**Camera limits already set (no changes needed):**
+All three forest levels have Camera2D limits set (`limit_left=0`, `limit_top=-64`, `limit_right=1280`, `limit_bottom=512`) preventing the camera from showing outside the tile area.
+
+**How to test:**
+1. Run any level and walk to the edge — background is black, not blue
+2. IntroMovie letterbox bars are seamlessly black
+3. MainMenu background image edges blend to black
+
+---
+
 ## [2026-05-01] - Fix IntroMovie fade logic and image size
 
 **Files Changed:**
