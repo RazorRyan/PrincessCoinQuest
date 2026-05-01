@@ -1,3 +1,217 @@
+## [2026-05-01] - Replace Main Menu buttons with image-based TextureButtons
+
+**Files Changed:**
+- `scenes/levels/MainMenu.tscn`
+- `scripts/ui/MainMenu.gd`
+
+**What changed:**
+
+Replaced the styled `Button` node with three `TextureButton` nodes using custom artwork:
+
+| Node | Texture |
+|---|---|
+| `StartGameButton` | `res://assets/backgrounds/StartGame.png` |
+| `OptionsButton` | `res://assets/backgrounds/Options.png` |
+| `ExitButton` | `res://assets/backgrounds/Exit.png` |
+
+Removed all `StyleBoxFlat` sub-resources and font ext-resources — no longer needed.
+
+**Scene structure:**
+```
+MainMenu (Control)
+├── Background (TextureRect)     ← PrincessCoinQuestMainMenu.png, Keep Aspect Covered
+└── ButtonContainer (VBoxContainer)
+    ├── StartGameButton (TextureButton)  ← StartGame.png
+    ├── OptionsButton   (TextureButton)  ← Options.png
+    └── ExitButton      (TextureButton)  ← Exit.png
+```
+
+**Layout:** `ButtonContainer` anchored `left=0 top=0.55 right=1 bottom=1` — buttons appear
+in the lower 45% of the screen, horizontally centered by VBoxContainer alignment.
+Vertical separation = 24px.
+
+**Signal connections (MainMenu.gd):**
+- `StartGameButton.pressed` → `GameManager.start_game()` → loads Level01
+- `OptionsButton.pressed` → `pass` (placeholder)
+- `ExitButton.pressed` → `get_tree().quit()`
+
+**How to Test:**
+1. Press **F5** — main menu opens with background image
+2. Three image buttons are visible in the lower half of the screen
+3. Click/tap **START GAME** → Level01 loads
+4. Click/tap **OPTIONS** → nothing happens (placeholder)
+5. Click/tap **EXIT** → game closes
+
+---
+
+## [2026-05-01] - Add Main Menu scene
+
+**Files Changed:**
+- `scenes/levels/MainMenu.tscn` *(fully replaced — was a misrouted gameplay scene)*
+- `scripts/ui/MainMenu.gd` *(new)*
+- `autoload/GameManager.gd` *(added `start_game()`)*
+- `project.godot` *(updated `run/main_scene` to point to MainMenu)*
+
+**Scene structure:**
+
+```
+MainMenu (Control) — fills viewport, root of scene
+├── Background (ColorRect) — sky blue #B8DEF5, fills viewport
+├── CenterContainer — fills viewport, auto-centers child
+│   └── VBoxContainer — separation = 16
+│       ├── TitleLabel — "Princess Coin Quest", PixelOperator Bold 28px, gold
+│       ├── SubtitleLabel — "Collect all coins. Reach the door.", PixelOperator 12px
+│       ├── Spacer — 20px vertical gap
+│       ├── StartButton — "START GAME", styled purple/gold (matches LevelCompleteUI)
+│       └── FooterLabel — control hints, PixelOperator 10px
+```
+
+**Behavior:**
+- `StartButton` pressed → `GameManager.start_game()`
+- `start_game()` resets `coins_collected`, `total_coins`, `current_level_index = 0`,
+  then loads `levels[0]` (`res://scenes/levels/Level01.tscn`)
+
+**GameManager.start_game():**
+Resets all coin state and level index before transitioning to Level01.
+Ensures a clean game state whether arriving from the title screen or a replay.
+
+**project.godot:**
+`run/main_scene` changed from the previous scene UID (`uid://opwh0leivwii`) to
+`uid://cy25jbugetljk` (MainMenu.tscn). The game now opens on the main menu at startup.
+
+**Fonts:**
+- Title: `PixelOperator8-Bold.ttf` (`res://assets/fonts/PixelOperator8-Bold.ttf`)
+- Subtitle / footer: `PixelOperator8.ttf` (`res://assets/fonts/PixelOperator8.ttf`)
+- Both are already in the project and imported.
+
+**How to Test:**
+1. Press **F5** (Run Project) in Godot — main menu appears immediately
+2. Title "Princess Coin Quest" is visible in gold pixel font
+3. Subtitle and footer are readable in smaller pixel font
+4. Hover over **START GAME** — button lights up purple/bright
+5. Press **START GAME** — Level01 loads, coins reset to 0
+6. Complete Level01 → Level02 → press **REPLAY** on Level02 — still works correctly
+
+---
+
+## [2026-05-01] - Implement repeatable level transitions (Level01 → Level02)
+
+**Files Changed:**
+- `autoload/GameManager.gd`
+- `scripts/levels/ExitDoor.gd`
+- `scripts/ui/LevelCompleteUI.gd`
+
+**What changed:**
+
+### GameManager.gd
+- Removed `current_level: int = 1` (format-string approach)
+- Added `levels: Array[String]` — explicit list of level scene paths:
+  - `res://scenes/levels/Level01.tscn`
+  - `res://scenes/levels/Level02.tscn`
+- Added `current_level_index: int = 0` — tracks position in the levels array
+- Added `complete_level()` — emits `level_completed` signal (music stop handled by LevelTemplate via signal)
+- Added `has_next_level() -> bool` — returns true if a next entry exists in the levels array
+- Updated `restart_level()` — uses `levels[current_level_index]` instead of format string
+- Updated `go_to_next_level()` — increments `current_level_index` and loads from the levels array; prints "No more levels. Game complete." if at end
+
+### ExitDoor.gd
+- Replaced direct `GameManager.level_completed.emit()` with `GameManager.complete_level()`
+- No hardcoded level paths; level progression is fully owned by GameManager
+
+### LevelCompleteUI.gd
+- **Replay button** now calls `GameManager.restart_level()` (was `get_tree().reload_current_scene()`)
+  - Correctly resets `coins_collected` in GameManager before reloading
+- **Next Level button** now calls `GameManager.go_to_next_level()`
+- On `_ready()`: if `GameManager.has_next_level()` returns false, Next Level button text is changed to `"GAME COMPLETE"` and the button is disabled
+
+**How to Test:**
+1. Run `Level01.tscn`
+2. Collect all coins → door opens
+3. Enter door → success sound plays, Level Complete UI appears after 0.4 s
+4. Press **REPLAY** → Level01 reloads with coins reset
+5. Complete Level01 again → press **NEXT LEVEL** → Level02 loads
+6. Complete Level02 → Level Complete UI shows **GAME COMPLETE** (button disabled)
+7. Press **REPLAY** on Level02 → Level02 reloads correctly
+
+---
+
+## [2026-04-27] - Fix gray background — clear color + ParallaxLayer setup
+
+**Files Changed:**
+- project.godot *(safe text edit — not affected by scene editor)*
+- scenes/levels/Level01.tscn *(Godot editor steps required — see below)*
+
+**Root Cause (3 compounding issues):**
+
+1. **No clear color set** — Godot defaults to gray `#808080` anywhere no sprite covers the screen.
+2. **Sprite2D in ParallaxLayer has no texture** — blank, draws nothing.
+3. **No motion_mirroring on ParallaxLayer** — even if a texture were set, a single non-tiling sprite cannot cover the full 1280px level width as the camera scrolls.
+
+**Fix applied in project.godot:**
+Added `environment/defaults/default_clear_color = Color(0.722, 0.871, 0.961, 1)` (sky blue `#B8DEF5`).
+This is a global safety net — any pixel with no sprite covering it renders as sky blue instead of gray.
+
+**Fix required in Godot editor (Level01.tscn):**
+
+### Step 1 — ParallaxLayer node
+1. Select `ParallaxBackground → ParallaxLayer` in the Scene panel
+2. In the Inspector set:
+   - **Motion Scale**: `Vector2(0.2, 0)` — background scrolls at 20% camera speed (parallax effect)
+   - **Motion Mirroring**: `Vector2(256, 0)` — tiles the background every 256px horizontally (infinite coverage)
+
+### Step 2 — Sprite2D node
+1. Select `ParallaxBackground → ParallaxLayer → Sprite2D`
+2. In the Inspector set:
+   - **Texture**: `res://assets/tilesets/spritesheet-backgrounds-default.png`
+   - **Region → Enabled**: ✅ ON
+   - **Region → Rect**: `Rect2(0, 0, 256, 256)` — uses the top-left sky panel only
+   - **Texture Filter**: `Nearest` (crisp pixel art)
+   - **Position**: `Vector2(0, -32)` — shifts sky up slightly so it sits in the upper level area
+3. Press **Ctrl+S**
+
+**Why this works:**
+- `motion_mirroring = Vector2(256, 0)` makes Godot automatically tile the 256px sky sprite across the full level width without needing extra nodes.
+- `motion_scale = Vector2(0.2, 0)` creates the parallax effect (sky moves slower than world).
+- The `Background` TileMapLayer already draws ground decoration tiles on top.
+- The `default_clear_color` covers any remaining gap at the very edges.
+
+**Background spritesheet reference:**
+The spritesheet `spritesheet-backgrounds-default.png` (1027×1027) has 4 panels at ~256×256px each:
+
+| Column 0 | Column 1 | Column 2 | Column 3 |
+|---|---|---|---|
+| Sky only (use this) | Desert/sand hills | Green grass hills | Autumn/mushroom hills |
+
+**Camera2D limits (unchanged, correct for this level):**
+
+| Limit | Value |
+|---|---|
+| limit_left | 0 |
+| limit_right | 1280 |
+| limit_top | -64 |
+| limit_bottom | 512 |
+
+**Z-index order (background → foreground):**
+
+| Node | z_index |
+|---|---|
+| ParallaxBackground | -10 (already set) |
+| Background (TileMapLayer) | 0 |
+| Mid (TileMapLayer) | 0 |
+| ExitDoor | 4 |
+| Player | 5 |
+| Slime | 5 |
+| Coin | 6 |
+
+**How to Test:**
+1. Run `Level01.tscn` — the background should be sky blue, never gray
+2. Walk/run the player all the way to the right edge (x~1280) — no gray
+3. Walk all the way to the left edge (x=0) — no gray
+4. Jump to the top of the level — background is sky blue, not gray
+5. Sky background should appear to scroll slightly slower than the tiles (parallax)
+
+---
+
 ## [2026-04-27] - Fix Z-index rendering order (objects hidden behind tiles)
 
 **Files Changed:**

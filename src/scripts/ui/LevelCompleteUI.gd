@@ -1,11 +1,18 @@
 extends CanvasLayer
 
 func _ready() -> void:
-	$Panel/MarginContainer/VBoxContainer/ReplayButton.pressed.connect(_on_replay_pressed)
-	$Panel/MarginContainer/VBoxContainer/NextLevelButton.pressed.connect(_on_next_level_pressed)
+	var replay_btn := $Panel/MarginContainer/VBoxContainer/ReplayButton
+	var next_btn := $Panel/MarginContainer/VBoxContainer/NextLevelButton
+
+	replay_btn.pressed.connect(_on_replay_pressed)
+	next_btn.pressed.connect(_on_next_level_pressed)
+
+	if not GameManager.has_next_level():
+		next_btn.text = "GAME COMPLETE"
+		next_btn.disabled = true
 
 func _on_replay_pressed() -> void:
-	get_tree().reload_current_scene()
+	GameManager.restart_level()
 
 func _on_next_level_pressed() -> void:
-	pass
+	GameManager.go_to_next_level()

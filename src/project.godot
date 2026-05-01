@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Princess Coin Quest"
-run/main_scene="uid://opwh0leivwii"
+run/main_scene="uid://cy25jbugetljk"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
@@ -59,3 +59,4 @@ attack={
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+environment/defaults/default_clear_color=Color(0.722, 0.871, 0.961, 1)

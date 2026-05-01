@@ -2,7 +2,12 @@ extends Node
 
 var coins_collected: int = 0
 var total_coins: int = 0
-var current_level: int = 1
+var current_level_index: int = 0
+
+var levels: Array[String] = [
+	"res://scenes/levels/Level01.tscn",
+	"res://scenes/levels/Level02.tscn",
+]
 
 signal coins_changed(current: int, total: int)
 signal all_coins_collected
@@ -20,17 +25,26 @@ func collect_coin() -> void:
 	if coins_collected >= total_coins:
 		all_coins_collected.emit()
 
+func complete_level() -> void:
+	level_completed.emit()
+
+func start_game() -> void:
+	coins_collected = 0
+	total_coins = 0
+	current_level_index = 0
+	get_tree().change_scene_to_file(levels[0])
+
+func has_next_level() -> bool:
+	return current_level_index + 1 < levels.size()
+
 func restart_level() -> void:
 	coins_collected = 0
-	var current_level_path := "res://scenes/levels/Level%02d.tscn" % current_level
-	get_tree().change_scene_to_file(current_level_path)
+	get_tree().change_scene_to_file(levels[current_level_index])
 
 func go_to_next_level() -> void:
-	var next_level := current_level + 1
-	var next_level_path := "res://scenes/levels/Level%02d.tscn" % next_level
-
-	if ResourceLoader.exists(next_level_path):
-		current_level = next_level
-		get_tree().change_scene_to_file(next_level_path)
+	var next_index := current_level_index + 1
+	if next_index < levels.size():
+		current_level_index = next_index
+		get_tree().change_scene_to_file(levels[current_level_index])
 	else:
 		print("No more levels. Game complete.")

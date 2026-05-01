@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://cy25jbugetljk"]
+
+[ext_resource type="Script" uid="uid://bucwmxxpunhag" path="res://scripts/ui/MainMenu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bmmt30r33kj7l" path="res://assets/backgrounds/PrincessCoinQuestMainMenu.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://x70oom7drrou" path="res://assets/backgrounds/StartGame.png" id="3_start"]
+[ext_resource type="Texture2D" uid="uid://jepbvxngxfxb" path="res://assets/backgrounds/Options.png" id="4_options"]
+[ext_resource type="Texture2D" uid="uid://d3l1wyko6iuqc" path="res://assets/backgrounds/Exit.png" id="5_exit"]
+[ext_resource type="AudioStream" uid="uid://bbueyn4wh2iqi" path="res://assets/music/PrincessCoinQuest_MainMenu_RetroFun.mp3" id="6_music"]
+
+[node name="MainMenu" type="Control" unique_id=100000001]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="." unique_id=100000002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=100000007]
+stream = ExtResource("6_music")
+autoplay = true
+bus = &"Music"
+
+[node name="ButtonContainer" type="VBoxContainer" parent="." unique_id=100000003]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.55
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="StartGameButton" type="TextureButton" parent="ButtonContainer" unique_id=100000004]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(320, 65)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("3_start")
+
+[node name="OptionsButton" type="TextureButton" parent="ButtonContainer" unique_id=100000005]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(320, 65)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("4_options")
+
+[node name="ExitButton" type="TextureButton" parent="ButtonContainer" unique_id=100000006]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(320, 65)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("5_exit")

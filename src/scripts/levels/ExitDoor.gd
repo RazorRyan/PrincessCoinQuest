@@ -18,7 +18,7 @@ func _unlock() -> void:
 
 func _on_body_entered(body: Node) -> void:
 	if body.name == "Player" and unlocked:
-		GameManager.level_completed.emit()
+		GameManager.complete_level()
 		if not success_sfx.playing:
 			success_sfx.play()
 		await get_tree().create_timer(0.4).timeout
