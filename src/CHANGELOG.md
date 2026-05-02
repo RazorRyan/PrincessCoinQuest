@@ -1,3 +1,45 @@
+## [2026-05-02] - HUD upgrade and pause menu
+
+**Files Changed:**
+- `scenes/ui/HUD.tscn`
+- `scripts/Hud.gd`
+
+**What changed:**
+
+### HUD restructure (`HUD.tscn`)
+- Nodes reorganised into `TopBar` (HBoxContainer, full-width, anchored to top) containing:
+  - `HealthBar` (ProgressBar, left — unchanged red/dark style)
+  - `CoinLabel` (Label, centre — expands to fill)
+  - `LevelLabel` (Label, right-aligned — expands to fill)
+- `PauseMenu` (Control, full-screen, hidden by default) added containing:
+  - `Overlay` (ColorRect, 60% black, blocks clicks through to game)
+  - `Panel` (StyleBoxFlat, centred 208×232px dark panel) with:
+    - `TitleLabel` — "PAUSED"
+    - `ResumeButton`, `RestartButton`, `MainMenuButton`
+- CanvasLayer `process_mode = PROCESS_MODE_ALWAYS` so HUD/pause stays active while tree is paused
+- Button signals wired in scene to `_on_resume_pressed`, `_on_restart_pressed`, `_on_main_menu_pressed`
+- Pixel font applied to all new labels and buttons
+
+### Hud.gd rewrite
+- `@onready` paths updated for new TopBar structure (`$TopBar/HealthBar`, `$TopBar/CoinLabel`, `$TopBar/LevelLabel`)
+- `_update_level_label()` — derives display from `GameManager.current_level_index + 1` (shows "Level 1", "Level 2", etc.)
+- `_unhandled_input()` — listens for `ui_cancel` (Escape) to toggle pause; works while paused because CanvasLayer is PROCESS_MODE_ALWAYS
+- `_toggle_pause()` — sets `get_tree().paused` and toggles `pause_menu.visible`
+- `_on_resume_pressed()` — calls `_toggle_pause()` to unpause
+- `_on_restart_pressed()` — unpauses then calls `GameManager.restart_level()`
+- `_on_main_menu_pressed()` — unpauses then loads `MainMenu.tscn`
+
+**How to test:**
+- Run any level — TopBar shows HP bar (left), "Coins: 0 / N" (centre), "Level N" (right)
+- Collect a coin — CoinLabel updates immediately
+- Take damage — HealthBar shrinks
+- Press Escape — pause menu appears over darkened screen; game stops
+- Click Resume — game unpauses
+- Click Restart Level — level reloads from scratch
+- Click Main Menu — returns to main menu
+
+---
+
 ## [2026-05-02] - Combat system improvements: knockback, invincibility, attack position passing
 
 **Files Changed:**

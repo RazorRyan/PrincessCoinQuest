@@ -9,27 +9,114 @@ bg_color = Color(0.15, 0.15, 0.15, 0.85)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpfill"]
 bg_color = Color(0.85, 0.15, 0.15, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar"]
+bg_color = Color(0.05, 0.05, 0.08, 0.88)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.08, 0.08, 0.12, 0.96)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [node name="Hud" type="CanvasLayer" unique_id=203162232]
+process_mode = 3
 script = ExtResource("1_kw0id")
 
-[node name="CoinLabel" type="Label" parent="." unique_id=1022225481]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 200.0
-offset_bottom = 28.0
-
-[node name="HealthBar" type="ProgressBar" parent="." unique_id=1022225482]
-anchor_left = 1.0
+[node name="TopBar" type="HBoxContainer" parent="." unique_id=300000001]
 anchor_right = 1.0
-offset_left = -118.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 22.0
+offset_left = 4.0
+offset_top = 4.0
+offset_bottom = 36.0
+theme_override_constants/separation = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar")
+
+[node name="HealthBar" type="ProgressBar" parent="TopBar" unique_id=1022225482]
+custom_minimum_size = Vector2(120, 18)
+size_flags_vertical = 4
 min_value = 0.0
 max_value = 1.0
 value = 1.0
 show_percentage = false
 theme_override_styles/background = SubResource("StyleBoxFlat_hpbg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_hpfill")
+
+[node name="CoinLabel" type="Label" parent="TopBar" unique_id=1022225481]
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Coins: 0 / 0"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+
+[node name="LevelLabel" type="Label" parent="TopBar" unique_id=300000004]
+size_flags_horizontal = 3
+size_flags_vertical = 4
+horizontal_alignment = 2
+text = "Level 1"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+
+[node name="PauseMenu" type="Control" parent="." unique_id=300000005]
+visible = false
+process_mode = 3
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Overlay" type="ColorRect" parent="PauseMenu" unique_id=300000006]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="Panel" parent="PauseMenu" unique_id=300000007]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -104.0
+offset_top = -116.0
+offset_right = 104.0
+offset_bottom = 116.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Margin" type="MarginContainer" parent="PauseMenu/Panel" unique_id=300000008]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Panel/Margin" unique_id=300000009]
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="PauseMenu/Panel/Margin/VBoxContainer" unique_id=300000010]
+horizontal_alignment = 1
+text = "PAUSED"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+
+[node name="HSeparator" type="HSeparator" parent="PauseMenu/Panel/Margin/VBoxContainer" unique_id=300000011]
+
+[node name="ResumeButton" type="Button" parent="PauseMenu/Panel/Margin/VBoxContainer" unique_id=300000012]
+process_mode = 3
+text = "Resume"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+
+[node name="RestartButton" type="Button" parent="PauseMenu/Panel/Margin/VBoxContainer" unique_id=300000013]
+process_mode = 3
+text = "Restart Level"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+
+[node name="MainMenuButton" type="Button" parent="PauseMenu/Panel/Margin/VBoxContainer" unique_id=300000014]
+process_mode = 3
+text = "Main Menu"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+
+[connection signal="pressed" from="PauseMenu/Panel/Margin/VBoxContainer/ResumeButton" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="PauseMenu/Panel/Margin/VBoxContainer/RestartButton" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="PauseMenu/Panel/Margin/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_pressed"]
 
 
