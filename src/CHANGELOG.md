@@ -1,3 +1,38 @@
+## [2026-05-02] - Combat system improvements: knockback, invincibility, attack position passing
+
+**Files Changed:**
+- `scripts/player/Player.gd`
+- `scripts/enemies/Slime.gd`
+
+**What changed:**
+
+### Attack position fix (`Player.gd`)
+- `_on_attack_area_body_entered` now passes `global_position` to `body.take_damage(ATTACK_DAMAGE, global_position)`
+- Previously passed no position → enemy `_from_position` was always `Vector2.ZERO` → slime knockback never fired
+
+### Player knockback (`Player.gd`)
+- `take_damage()` knockback now separates axes: `velocity.x = knockback_dir.x * KNOCKBACK_FORCE` + explicit `velocity.y = -80.0`
+- Previously used `velocity = knockback_dir * KNOCKBACK_FORCE` (full normalized vector) which gave a weak or zero vertical kick when attacker was at same height
+
+### Player invincibility window (`Player.gd`)
+- `INVINCIBILITY_DURATION` increased from `0.4` → `0.8s` — prevents repeated hits from chaining
+- Hurt flash and invincibility both use this constant so both lengthen automatically (5 flickers at 0.8s vs 2 at 0.4s)
+
+### Enemy knockback vertical kick (`Slime.gd`)
+- `take_damage()` now adds `velocity.y = -50.0` on knockback so the slime pops upward slightly when hit
+- `_knockback_timer = 0.25` still suppresses normal patrol movement during the knockback
+
+**Knockback direction logic:**
+- Slime: `_from_position.direction_to(global_position)` — pushes away from the player's attack source
+- Player: `(global_position - from_position).normalized()` then `.x * KNOCKBACK_FORCE` — pushes away horizontally with a fixed upward kick
+
+**How to test:**
+- Attack slime → slime pops up and back, plays hurt flash; spamming attack is blocked by cooldown
+- Touch slime → player is knocked back with an upward kick; invincibility lasts ~0.8s (5 flickers visible)
+- Run into slime twice quickly → second hit blocked by invincibility window
+
+---
+
 ## [2026-05-02] - Game feel polish: hit flash, screen shake, sound effects, particle effects
 
 **Files Changed:**

@@ -3,8 +3,8 @@ extends CharacterBody2D
 const SPEED := 160.0
 const JUMP_VELOCITY := -400.0
 const ATTACK_DAMAGE := 1
-const KNOCKBACK_FORCE := 160.0
-const INVINCIBILITY_DURATION := 0.4
+const KNOCKBACK_FORCE := 120.0
+const INVINCIBILITY_DURATION := 0.5
 const ATTACK_COOLDOWN := 0.45
 
 @export var max_hp := 3
@@ -128,7 +128,7 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 		return
 	if is_attacking and not body in _attack_hits and body.has_method("take_damage"):
 		_attack_hits[body] = true
-		body.take_damage(ATTACK_DAMAGE)
+		body.take_damage(ATTACK_DAMAGE, global_position)
 
 func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
 	if _power_up_active or is_invincible or is_dying or GameManager.cheat_invincible:
@@ -141,7 +141,8 @@ func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
 
 	if from_position != Vector2.ZERO:
 		var knockback_dir := (global_position - from_position).normalized()
-		velocity = knockback_dir * KNOCKBACK_FORCE
+		velocity.x = knockback_dir.x * KNOCKBACK_FORCE
+		velocity.y = -55.0
 
 	sprite.play("hurt")
 	_hurt_sfx.play()

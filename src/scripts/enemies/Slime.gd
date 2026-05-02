@@ -92,6 +92,7 @@ func take_damage(amount: int, _from_position: Vector2 = Vector2.ZERO) -> void:
 	if _from_position != Vector2.ZERO:
 		var dir := _from_position.direction_to(global_position)
 		velocity.x = dir.x * knockback_force
+		velocity.y = -50.0
 		_knockback_timer = 0.25
 
 	_update_health_bar()
