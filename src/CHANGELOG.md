@@ -1,3 +1,46 @@
+## [2026-05-02] - Lava Hazard system
+
+**Files Changed:**
+- `scripts/hazards/LavaHazard.gd` *(new)*
+- `scripts/hazards/LavaHazard.gd.uid` *(new)*
+- `scenes/hazards/LavaHazard.tscn` *(new)*
+- `scenes/levels/forest_levels/Level03.tscn`
+
+**What changed:**
+
+### LavaHazard.gd (`Area2D`)
+- `@export var damage := 1` — tunable hit damage
+- `@export var cooldown := 0.8` — seconds between damage ticks while player stands in lava
+- Tracks player presence with `body_entered` / `body_exited`; applies damage immediately on entry then respects cooldown
+- Filters by `is_in_group("player")` — enemies are unaffected
+- Plays `"flow"` animation if available, falls back to `"idle"`
+- Subtle heat shimmer: pulses sprite alpha between 85 %–100 % via `sin()` in `_process`
+
+### LavaHazard.tscn scene structure
+```
+LavaHazard (Area2D, collision_layer=4, collision_mask=1)
+├── AnimatedSprite2D  (scale 4×1, SpriteFrames "idle" 2-frame gradient animation at 4 fps)
+├── CollisionShape2D  (RectangleShape2D 64×14)
+└── AudioStreamPlayer2D  (reserved for future SFX)
+```
+- Frame 0: vertical gradient dark-orange → deep-red  
+- Frame 1: vertical gradient bright-yellow-orange → vivid-orange  
+- Combined animation gives natural lava flicker without any sprite assets
+
+### Level03 — Lava hazards
+- `Hazards` container node added
+- `Lava01` at (280, 356) — pit area, well clear of player spawn (119, 313)
+- `Lava02` at (448, 356) — second pit near exit approach
+
+**How to test:**
+1. Open Level03 in Godot and run the scene
+2. Walk the player into a lava tile — hp drops by 1, player gets knockback + invincibility flash
+3. Stand on lava — hp drops repeatedly every 0.8 s
+4. Confirm enemies are not damaged by lava
+5. Confirm lava animation plays and shimmers
+
+---
+
 ## [2026-05-02] - Polished moving platform system
 
 **Files Changed:**

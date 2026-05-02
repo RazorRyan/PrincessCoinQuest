@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://b8qlkk50hjyws" path="res://scenes/levels/ExitDoor.tscn" id="6_18j2o"]
 [ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="7_8hrjg"]
 [ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="8_72rcw"]
-[ext_resource type="PackedScene" uid="uid://ch6wf8rnpq3mt" path="res://scenes/platforms/MovingPlatform.tscn" id="9_mplt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4om3"]
 texture = ExtResource("3_dpu76")
@@ -257,8 +256,3 @@ limit_right = 1280
 limit_bottom = 512
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
-
-[node name="MovingPlatforms" type="Node" parent="." unique_id=300000101]
-
-[node name="Platform01" parent="MovingPlatforms" unique_id=300000102 instance=ExtResource("9_mplt")]
-position = Vector2(300, 222)
