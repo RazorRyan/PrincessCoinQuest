@@ -1,3 +1,42 @@
+## [2026-05-02] - Game feel polish: hit flash, screen shake, sound effects, particle effects
+
+**Files Changed:**
+- `scripts/effects/AutoFree.gd` *(new)*
+- `scenes/effects/CoinSparkle.tscn` *(new)*
+- `scenes/effects/HitBurst.tscn` *(new)*
+- `scripts/player/Player.gd`
+- `scripts/enemies/Slime.gd`
+- `scenes/enemies/Slime.tscn`
+- `scripts/pickups/Coin.gd`
+
+**What changed:**
+
+### Particle effects
+- `AutoFree.gd` — reusable script that extends `CPUParticles2D`; auto-`queue_free()`s after `lifetime + 0.1s`
+- `CoinSparkle.tscn` — 8 yellow particles, one-shot, 0.4s lifetime; spawned at coin position on pickup
+- `HitBurst.tscn` — 10 red particles, one-shot, 0.3s lifetime; spawned at slime position on hit
+
+### Screen shake (`Player.gd`)
+- Added `shake_camera(amount, duration)` — finds child `Camera2D`, offsets it frame-by-frame with decaying random displacement, resets to zero on finish
+- `take_damage()` now calls `shake_camera(4.0, 0.15)` when player is hurt
+
+### Enemy hit feedback (`Slime.gd` + `Slime.tscn`)
+- `_play_hurt()` now flashes sprite to `Color(1, 0.4, 0.4)` for 0.15s then reverts to `Color.WHITE`
+- New `_spawn_hit_effects()` called from `take_damage()`: plays `hit_sfx`, spawns `HitBurst`, calls `shake_camera(3.0, 0.12)` on the player via group lookup
+- `hit_sfx` (`AudioStreamPlayer2D`, `hurt.wav`) node added to `Slime.tscn`
+
+### Coin pickup (`Coin.gd`)
+- `_spawn_pickup_effects()` — spawns `CoinSparkle` at coin's position; spawns a detached `AudioStreamPlayer` (uses `PickupSound.stream`) so sound completes after `queue_free()`
+
+**How to test:**
+- Run any forest level
+- Jump → `jump_sfx` plays (was already wired)
+- Collect coin → yellow sparkle burst + coin sound plays cleanly
+- Attack slime → slime flashes red + hit sound + red particle burst + subtle camera shake
+- Player takes damage → screen shakes + hurt flash + hurt sound
+
+---
+
 ## [2026-05-01] - Add intro music to IntroMovie
 
 **Files Changed:**

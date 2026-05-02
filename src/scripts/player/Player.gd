@@ -146,6 +146,7 @@ func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
 	sprite.play("hurt")
 	_hurt_sfx.play()
 	_start_hurt_flash()
+	shake_camera(4.0, 0.15)
 
 	if hp <= 0:
 		die()
@@ -165,6 +166,21 @@ func _start_hurt_flash() -> void:
 		await get_tree().create_timer(flash_interval).timeout
 	if not _power_up_active:
 		sprite.modulate = Color.WHITE
+
+func shake_camera(amount := 3.0, duration := 0.15) -> void:
+	var cam := get_node_or_null("Camera2D") as Camera2D
+	if cam == null:
+		return
+	var elapsed := 0.0
+	while elapsed < duration:
+		var t := 1.0 - (elapsed / duration)
+		cam.offset = Vector2(
+			randf_range(-amount, amount) * t,
+			randf_range(-amount, amount) * t
+		)
+		await get_tree().process_frame
+		elapsed += get_process_delta_time()
+	cam.offset = Vector2.ZERO
 
 func die() -> void:
 	is_dying = true

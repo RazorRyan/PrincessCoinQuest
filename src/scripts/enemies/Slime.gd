@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const HealthBarScene := preload("res://scenes/ui/EnemyHealthBar.tscn")
+const HitBurst := preload("res://scenes/effects/HitBurst.tscn")
 
 @export var speed := 45.0
 @export var hp := 1
@@ -12,6 +13,7 @@ const HealthBarScene := preload("res://scenes/ui/EnemyHealthBar.tscn")
 @onready var floor_check: RayCast2D = $FloorCheck
 @onready var hitbox: Area2D = $Hitbox
 @onready var _splat_sfx: AudioStreamPlayer2D = $splat_sfx
+@onready var _hit_sfx: AudioStreamPlayer2D = $hit_sfx
 
 var direction := -1
 var _flip_cooldown := 0.0
@@ -93,6 +95,7 @@ func take_damage(amount: int, _from_position: Vector2 = Vector2.ZERO) -> void:
 		_knockback_timer = 0.25
 
 	_update_health_bar()
+	_spawn_hit_effects()
 	if hp <= 0:
 		die()
 	else:
@@ -104,10 +107,23 @@ func _update_health_bar() -> void:
 
 func _play_hurt() -> void:
 	_is_hurt = true
+	sprite.modulate = Color(1, 0.4, 0.4)
 	sprite.play("hurt")
-	await get_tree().create_timer(0.3).timeout
+	await get_tree().create_timer(0.15).timeout
+	if not _is_dying:
+		sprite.modulate = Color.WHITE
+	await get_tree().create_timer(0.15).timeout
 	if not _is_dying:
 		_is_hurt = false
+
+func _spawn_hit_effects() -> void:
+	_hit_sfx.play()
+	var burst := HitBurst.instantiate()
+	burst.global_position = global_position
+	get_tree().current_scene.add_child(burst)
+	var players := get_tree().get_nodes_in_group("player")
+	if players.size() > 0 and players[0].has_method("shake_camera"):
+		players[0].shake_camera(3.0, 0.12)
 
 func die() -> void:
 	_is_dying = true
