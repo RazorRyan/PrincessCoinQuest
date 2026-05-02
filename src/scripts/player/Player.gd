@@ -82,6 +82,8 @@ func _physics_process(delta: float) -> void:
 
 	if not is_attacking and not is_hurt and not is_dying:
 		velocity.x = direction * SPEED
+		if is_on_floor():
+			velocity.x += get_platform_velocity().x
 
 		if direction != 0:
 			sprite.flip_h = direction < 0

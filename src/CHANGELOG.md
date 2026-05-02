@@ -1,3 +1,55 @@
+## [2026-05-02] - Polished moving platform system
+
+**Files Changed:**
+- `scripts/platforms/MovingPlatform.gd` *(new)*
+- `scenes/platforms/MovingPlatform.tscn` *(new)*
+- `scripts/player/Player.gd`
+- `scenes/levels/forest_levels/Level02.tscn`
+
+**What changed:**
+
+### MovingPlatform.gd (`AnimatableBody2D`)
+- Travels between `StartPoint` and `EndPoint` Marker2D children
+- `StartPoint` is at local (0,0) — the platform's scene placement IS the start position
+- `EndPoint` default offset (80, 0) — change in editor to set travel direction and distance
+- `@export speed := 40.0` — pixels per second, safe and readable for kids
+- `@export wait_time := 0.5` — brief pause at each end before reversing
+- `@export bob_amount := 1.5` — visual-only Y oscillation; does NOT move the collision shape so `get_floor_velocity()` stays clean and stable
+- Both Marker2D world positions are cached in `_ready()` before any movement begins, so the markers (which travel with the body) don't produce drifting targets
+- Direction change: `_going_to_end` bool is toggled on arrival; `get_tree().create_timer(wait_time)` drives the pause via `CONNECT_ONE_SHOT`
+
+### MovingPlatform.tscn scene structure
+```
+MovingPlatform (AnimatableBody2D)
+├── Visual (Node2D) ← bob applied here only
+│   ├── Shadow (Polygon2D, semi-transparent dark, offset 1,1)
+│   ├── Body   (Polygon2D, warm brown, 64×9px)
+│   └── TopStrip (Polygon2D, lighter highlight, 64×2px at top)
+├── CollisionShape2D (RectangleShape2D 64×10)
+├── StartPoint (Marker2D, local 0,0)
+└── EndPoint   (Marker2D, local 80,0 — default horizontal travel)
+```
+
+### Player.gd — floor velocity inheritance
+- Added `if is_on_floor(): velocity.x += get_floor_velocity().x` inside the normal movement block
+- Requires `AnimatableBody2D.sync_to_physics = true` (Godot 4 default) so the physics server tracks position deltas and exposes them as floor velocity
+- Player walking left/right on platform: combined velocity = player input + platform velocity (correct world-space behaviour)
+- During attack/hurt states: `velocity.x` is not modified so platform interaction is seamless
+
+### Level02 — Platform01
+- `MovingPlatforms` container node added
+- `Platform01` placed at (300, 222) — positioned below Coin05 at (362, 181) so the player can ride the platform rightward and jump up to reach the coin
+- Platform travels 80px horizontally (EndPoint default) — safe, slow, clearly readable
+
+**How to test:**
+- Run Level02 — brown platform slides left/right with a subtle hover bob
+- Walk onto it — player is carried with the platform (no sliding back)
+- Jump off mid-travel — player leaves at combined velocity, lands normally
+- Ride rightward — reach the elevated coin area that was hard without the platform
+- Adjust `EndPoint` position in the Godot editor to change travel distance/direction for any future level
+
+---
+
 ## [2026-05-02] - HUD upgrade and pause menu
 
 **Files Changed:**

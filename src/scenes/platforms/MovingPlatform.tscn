@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://d3rexd28moam7"]
+
+[ext_resource type="Script" path="res://scripts/platforms/MovingPlatform.gd" id="1_mplt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mplt"]
+size = Vector2(64, 10)
+
+[node name="MovingPlatform" type="AnimatableBody2D" unique_id=2120583644]
+script = ExtResource("1_mplt")
+
+[node name="Visual" type="Node2D" parent="." unique_id=1531720947]
+
+[node name="Shadow" type="Polygon2D" parent="Visual" unique_id=2113907969]
+position = Vector2(1, 1)
+color = Color(0.1, 0.06, 0.02, 0.5)
+polygon = PackedVector2Array(-32, -5, 32, -5, 32, 5, -32, 5)
+
+[node name="Body" type="Polygon2D" parent="Visual" unique_id=1044803503]
+color = Color(0.1822454, 0.29284576, 0.60839075, 1)
+polygon = PackedVector2Array(-32, -4, 32, -4, 32, 5, -32, 5)
+
+[node name="TopStrip" type="Polygon2D" parent="Visual" unique_id=1440722037]
+color = Color(0.63194, 0.4114504, 0.7738319, 1)
+polygon = PackedVector2Array(-32, -5, 32, -5, 32, -3, -32, -3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1471497330]
+shape = SubResource("RectangleShape2D_mplt")
+
+[node name="StartPoint" type="Marker2D" parent="." unique_id=1425685280]
+
+[node name="EndPoint" type="Marker2D" parent="." unique_id=1489888209]
+position = Vector2(80, 0)
