@@ -1,3 +1,52 @@
+## [2026-05-02] - Checkpoint and respawn system
+
+**Files Changed:**
+- `autoload/GameManager.gd`
+- `scripts/player/Player.gd`
+- `scripts/checkpoints/Checkpoint.gd` *(new)*
+- `scripts/checkpoints/Checkpoint.gd.uid` *(new)*
+- `scenes/checkpoints/Checkpoint.tscn` *(new)*
+- `scenes/levels/forest_levels/Level03.tscn`
+
+**What changed:**
+
+### GameManager.gd — checkpoint state
+- `var current_checkpoint_position: Vector2` — last activated checkpoint world position
+- `var has_checkpoint := false` — whether a checkpoint has been activated this level
+- `set_checkpoint(pos)` — called by `Checkpoint.gd` on activation
+- `get_respawn_position(fallback)` — returns checkpoint pos if active, else `fallback` (player's original spawn)
+- `clear_checkpoint()` — resets checkpoint state; called automatically by `restart_level()`, `go_to_next_level()`, and `load_level_at_index()`
+
+### Player.gd — respawn instead of full restart
+- `_spawn_position` stored from `global_position` in `_ready()` — used as fallback when no checkpoint is set
+- `die()` — now calls `respawn()` after the 1-second death delay instead of `GameManager.restart_level()`
+- `respawn()` — teleports player to `GameManager.get_respawn_position(_spawn_position)`, restores full hp, resets velocity/state flags, plays a brief invincibility flash so the player can reorient safely
+
+### Checkpoint.gd scene structure
+```
+Checkpoint (Area2D, collision_layer=0, collision_mask=1)
+├── AnimatedSprite2D  (scale 2×2; SpriteFrames "inactive" + "active" animations)
+├── CollisionShape2D  (RectangleShape2D 24×40 — wide enough to catch walking player)
+└── AudioStreamPlayer2D  (plays if a stream is assigned)
+```
+- Inactive: single-frame cool gray-blue gradient (dim, unlit look)
+- Active: 2-frame warm gold/yellow flicker at 6 fps (glowing, lit)
+- Activates only once per level; calls `GameManager.set_checkpoint(global_position)`
+
+### Level03 — hazards and checkpoint
+- `Hazards` container added with `Lava01` (280, 356) and `Lava02` (448, 356)
+- `Checkpoints` container added with `Checkpoint01` (350, 300) — mid-level, past the first lava pit, before the second
+
+**How to test:**
+1. Open Level03 and run the scene
+2. Walk player right past lava pit at x≈280 into the checkpoint at x≈350 — sprite turns gold
+3. Continue right, fall into the second lava pit or take enough damage to die
+4. Player plays die animation, then reappears at the checkpoint (350, 300) with full HP and a brief invincibility flash
+5. Without touching the checkpoint first: die → player reappears at original spawn (119, 313)
+6. Complete the level normally → checkpoint clears, Level01/02 unaffected
+
+---
+
 ## [2026-05-02] - Lava Hazard system
 
 **Files Changed:**

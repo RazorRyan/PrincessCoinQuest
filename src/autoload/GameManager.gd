@@ -5,6 +5,9 @@ var total_coins: int = 0
 var current_level_index: int = 0
 var cheat_invincible: bool = false
 
+var current_checkpoint_position: Vector2 = Vector2.ZERO
+var has_checkpoint := false
+
 var levels: Array[String] = [
 	"res://scenes/levels/forest_levels/Level01.tscn",
 	"res://scenes/levels/forest_levels/Level02.tscn",
@@ -41,10 +44,12 @@ func has_next_level() -> bool:
 
 func restart_level() -> void:
 	coins_collected = 0
+	clear_checkpoint()
 	get_tree().change_scene_to_file(levels[current_level_index])
 
 func go_to_next_level() -> void:
 	var next_index := current_level_index + 1
+	clear_checkpoint()
 	if next_index < levels.size():
 		current_level_index = next_index
 		get_tree().change_scene_to_file(levels[current_level_index])
@@ -55,4 +60,18 @@ func load_level_at_index(index: int) -> void:
 	coins_collected = 0
 	total_coins = 0
 	current_level_index = index
+	clear_checkpoint()
 	get_tree().change_scene_to_file(levels[index])
+
+func set_checkpoint(pos: Vector2) -> void:
+	current_checkpoint_position = pos
+	has_checkpoint = true
+
+func get_respawn_position(fallback: Vector2) -> Vector2:
+	if has_checkpoint:
+		return current_checkpoint_position
+	return fallback
+
+func clear_checkpoint() -> void:
+	has_checkpoint = false
+	current_checkpoint_position = Vector2.ZERO

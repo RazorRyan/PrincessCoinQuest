@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c8r0r67bwfrsm" path="res://scripts/powerups/InvinciblePowerUp.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://d1urumogptugp" path="res://assets/tilesets/PowerUp_Invincibility.png" id="2_tex"]
-[ext_resource type="AudioStream" uid="uid://bi7qjfs5lb218" path="res://assets/sfx/power_up.wav" id="3_sfx"]
+[ext_resource type="AudioStream" uid="uid://dporkucnrt3d4" path="res://assets/sfx/Retro PowerUP StereoUP 05.wav" id="3_sfx"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_powerup"]
 animations = [{

@@ -29,9 +29,11 @@ var _attack_hits := {}
 
 var _power_up_active := false
 var _power_up_timer := 0.0
+var _spawn_position: Vector2
 
 func _ready() -> void:
 	hp = max_hp
+	_spawn_position = global_position
 	add_to_group("player")
 	attack_area.monitoring = false
 	attack_area.body_entered.connect(_on_attack_area_body_entered)
@@ -191,4 +193,20 @@ func die() -> void:
 	sprite.play("die")
 	_lose_sfx.play()
 	await get_tree().create_timer(1.0).timeout
-	GameManager.restart_level()
+	respawn()
+
+func respawn() -> void:
+	global_position = GameManager.get_respawn_position(_spawn_position)
+	velocity = Vector2.ZERO
+	hp = max_hp
+	is_dying = false
+	is_hurt = false
+	is_attacking = false
+	can_attack = true
+	is_invincible = true
+	_attack_hits.clear()
+	hp_changed.emit(hp, max_hp)
+	sprite.play("idle")
+	_start_hurt_flash()
+	await get_tree().create_timer(INVINCIBILITY_DURATION).timeout
+	is_invincible = false
