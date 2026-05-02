@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="7_nqpjp"]
 [ext_resource type="PackedScene" uid="uid://cru5vvxl2v5g3" path="res://scenes/powerups/InvinciblePowerUp.tscn" id="8_idr10"]
 [ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="8_thxdf"]
-[ext_resource type="PackedScene" path="res://scenes/hazards/LavaHazard.tscn" id="9_lava"]
+[ext_resource type="PackedScene" uid="uid://xxh7ctnw1kf2" path="res://scenes/hazards/LavaHazard.tscn" id="9_lava"]
 [ext_resource type="PackedScene" uid="uid://cm4yabvhfrk2p" path="res://scenes/checkpoints/Checkpoint.tscn" id="10_chk"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4om3"]
@@ -270,9 +270,11 @@ position_smoothing_speed = 8.0
 
 [node name="Lava01" parent="Hazards" unique_id=1700000002 instance=ExtResource("9_lava")]
 position = Vector2(40, 187)
+scale = Vector2(0.5, 0.5)
 
 [node name="Lava02" parent="Hazards" unique_id=1700000003 instance=ExtResource("9_lava")]
 position = Vector2(208, 363)
+scale = Vector2(0.5, 0.5)
 
 [node name="Checkpoints" type="Node" parent="." unique_id=1800000001]
 
