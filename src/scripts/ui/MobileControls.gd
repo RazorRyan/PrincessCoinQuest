@@ -9,22 +9,32 @@ extends CanvasLayer
 func _ready() -> void:
 	var vp := get_viewport().get_visible_rect().size
 
+	# Scale all controls 2× for visibility on modern phone displays (e.g. Samsung S25).
+	# Do NOT scale the CanvasLayer itself — that shifts children away from screen edges.
+	$DpadSprite.scale = Vector2(2.0, 2.0)
+	$BtnLeft.scale    = Vector2(2.0, 2.0)
+	$BtnRight.scale   = Vector2(2.0, 2.0)
+	$BtnAttack.scale  = Vector2(2.0, 2.0)
+	$BtnJump.scale    = Vector2(2.0, 2.0)
+
 	# ── Left side: d-pad ────────────────────────────────────────────────────────
 	# DpadSprite is a Sprite2D whose origin is its centre.
-	# BtnLeft / BtnRight are TouchScreenButton with an invisible shape whose
-	# hit-box is centred on the node's position.
-	# 20 px padding from left and bottom edges.
-	var dpad_cx := 80.0
-	var dpad_cy := vp.y - 130.0
+	# At scale 2× the rendered half-height ≈ 64 px → centre 84 px from bottom
+	# (64 px half-height + 20 px padding = 84 px).
+	# BtnLeft / BtnRight shapes are 38×77 local units → 76×154 effective at scale 2.
+	var dpad_cx := 150.0
+	var dpad_cy := vp.y - 84.0
 	$DpadSprite.position = Vector2(dpad_cx, dpad_cy)
-	$BtnLeft.position    = Vector2(dpad_cx - 19.0, dpad_cy)
-	$BtnRight.position   = Vector2(dpad_cx + 19.0, dpad_cy)
+	$BtnLeft.position    = Vector2(dpad_cx - 38.0, dpad_cy)
+	$BtnRight.position   = Vector2(dpad_cx + 38.0, dpad_cy)
 
 	# ── Right side: action buttons ───────────────────────────────────────────────
-	# BtnAttack / BtnJump are TouchScreenButton with a texture_normal.
-	# For textured TouchScreenButtons the position is the top-left corner.
-	# Buttons are 64×64 px at scale 0.6 → ~38 px rendered.
-	# Laid out side-by-side with 8 px gap; 20 px padding from right and bottom.
-	var btn_y    := vp.y - 130.0          # top-left y  (raised from bottom)
-	$BtnAttack.position = Vector2(vp.x - 148.0, btn_y)   # square (left)
-	$BtnJump.position   = Vector2(vp.x - 58.0,  btn_y)   # circle (right)
+	# BtnAttack / BtnJump have a 64×64 texture; at scale 2× they render as 128×128.
+	# Position is the top-left corner of the scaled button.
+	# 20 px padding from right and bottom edges; 10 px gap between buttons.
+	var btn_size := 128.0
+	var btn_gap  := 10.0
+	var pad      := 20.0
+	var btn_y    := vp.y - btn_size - pad
+	$BtnAttack.position = Vector2(vp.x - btn_size * 2.0 - btn_gap - pad, btn_y)  # square (left)
+	$BtnJump.position   = Vector2(vp.x - btn_size - pad,                  btn_y)  # circle (right)

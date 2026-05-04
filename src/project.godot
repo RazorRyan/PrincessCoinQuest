@@ -28,11 +28,9 @@ GameManager="*uid://ccjxly8fpuug6"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/mode=2
-; window/size/borderless=true
 window/size/window_width_override=1152
 window/size/window_height_override=648
 window/stretch/mode="canvas_items"
-; window/stretch/aspect="expand"
 
 [input]
 
