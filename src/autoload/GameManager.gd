@@ -12,6 +12,7 @@ var levels: Array[String] = [
 	"res://scenes/levels/forest_levels/Level01.tscn",
 	"res://scenes/levels/forest_levels/Level02.tscn",
 	"res://scenes/levels/forest_levels/Level03.tscn",
+	"res://scenes/levels/forest_levels/BossLevel.tscn",
 ]
 
 signal coins_changed(current: int, total: int)

@@ -4,6 +4,7 @@ func _ready() -> void:
 	$ButtonContainer/Level1Button.pressed.connect(_on_level_pressed.bind(0))
 	$ButtonContainer/Level2Button.pressed.connect(_on_level_pressed.bind(1))
 	$ButtonContainer/Level3Button.pressed.connect(_on_level_pressed.bind(2))
+	$ButtonContainer/BossLevelButton.pressed.connect(_on_level_pressed.bind(3))
 	$ButtonContainer/BackButton.pressed.connect(_on_back_pressed)
 	var toggle: CheckButton = $ButtonContainer/InvincibleToggle
 	toggle.button_pressed = GameManager.cheat_invincible

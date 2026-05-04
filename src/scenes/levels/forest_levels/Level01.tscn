@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b8qlkk50hjyws" path="res://scenes/levels/ExitDoor.tscn" id="6_qratm"]
 [ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="7_wapmv"]
 [ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="8_sm5eu"]
-[ext_resource type="PackedScene" uid="uid://mobile001tscn" path="res://scenes/ui/MobileControls.tscn" id="9_mobctrl"]
+[ext_resource type="PackedScene" uid="uid://b3vtfy0xemsmj" path="res://scenes/ui/MobileControls.tscn" id="9_mobctrl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4om3"]
 texture = ExtResource("3_n721c")
@@ -250,3 +250,5 @@ position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
 [node name="MobileControls" parent="." unique_id=1900000001 instance=ExtResource("9_mobctrl")]
+scale = Vector2(1.5, 1.5)
+transform = Transform2D(1.5, 0, 0, 1.5, 0, 0)

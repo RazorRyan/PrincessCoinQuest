@@ -1,7 +1,7 @@
-[gd_scene format=4 uid="uid://22vs8aac752d"]
+[gd_scene format=3 uid="uid://b3vtfy0xemsmj"]
 
-[ext_resource type="Script" uid="uid://mobile001ctrl" path="res://scripts/ui/MobileControls.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bi8xh723pdcpj" path="res://assets/controls/dpad_separate.png" id="2_dpad"]
+[ext_resource type="Script" uid="uid://22vs8aacp7ib" path="res://scripts/ui/MobileControls.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cipk345owdun4" path="res://assets/controls/dpad_separate.png" id="2_dpad"]
 [ext_resource type="Texture2D" uid="uid://dlcivwte30mvc" path="res://assets/controls/button_circle.png" id="3_circle"]
 [ext_resource type="Texture2D" uid="uid://c81u2rbcdb8od" path="res://assets/controls/button_square.png" id="4_square"]
 
@@ -11,38 +11,36 @@ size = Vector2(38, 77)
 [sub_resource type="RectangleShape2D" id="RectShape_right"]
 size = Vector2(38, 77)
 
-[node name="MobileControls" type="CanvasLayer"]
-script = ExtResource("1_script")
+[node name="MobileControls" type="CanvasLayer" unique_id=1064376649]
 layer = 10
+script = ExtResource("1_script")
 
-[node name="DpadSprite" type="Sprite2D" parent="."]
+[node name="DpadSprite" type="Sprite2D" parent="." unique_id=434855007]
 modulate = Color(1, 1, 1, 0.7)
-position = Vector2(58, 662)
-scale = Vector2(0.594, 0.6)
+position = Vector2(94, 611)
+scale = Vector2(1, 1.01)
 texture = ExtResource("2_dpad")
 
-[node name="BtnLeft" type="TouchScreenButton" parent="."]
-position = Vector2(39, 662)
-action = "move_left"
+[node name="BtnLeft" type="TouchScreenButton" parent="." unique_id=1842144153]
+position = Vector2(56, 612)
 shape = SubResource("RectShape_left")
 shape_visible = false
+action = "move_left"
 
-[node name="BtnRight" type="TouchScreenButton" parent="."]
-position = Vector2(77, 662)
-action = "move_right"
+[node name="BtnRight" type="TouchScreenButton" parent="." unique_id=879871852]
+position = Vector2(137, 608)
 shape = SubResource("RectShape_right")
 shape_visible = false
+action = "move_right"
 
-[node name="BtnAttack" type="TouchScreenButton" parent="."]
+[node name="BtnAttack" type="TouchScreenButton" parent="." unique_id=636267275]
 modulate = Color(1, 1, 1, 0.7)
-position = Vector2(1176, 662)
-scale = Vector2(0.6, 0.6)
+position = Vector2(1060, 571)
 texture_normal = ExtResource("4_square")
 action = "attack"
 
-[node name="BtnJump" type="TouchScreenButton" parent="."]
+[node name="BtnJump" type="TouchScreenButton" parent="." unique_id=1799232283]
 modulate = Color(1, 1, 1, 0.7)
-position = Vector2(1222, 662)
-scale = Vector2(0.6, 0.6)
+position = Vector2(1180, 568)
 texture_normal = ExtResource("3_circle")
 action = "jump"

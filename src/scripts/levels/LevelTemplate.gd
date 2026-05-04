@@ -3,12 +3,12 @@ extends Node2D
 @export var level_music: AudioStream = null
 @export var music_loop_end: float = 60.0
 
-@onready var coins_container: Node = $Coins
+@onready var coins_container: Node = $Coins if has_node("Coins") else null
 
 var _music_player: AudioStreamPlayer
 
 func _ready() -> void:
-	var total := coins_container.get_child_count()
+	var total := coins_container.get_child_count() if coins_container != null else 0
 	GameManager.reset_level_coin_count(total)
 	GameManager.level_completed.connect(_on_level_completed)
 	_start_music()

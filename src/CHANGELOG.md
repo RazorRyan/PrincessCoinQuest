@@ -1,3 +1,19 @@
+## [2026-05-04] - Boss level integration and DemonBossSlime AI
+
+**Files Changed:**
+- `autoload/GameManager.gd` — added `BossLevel.tscn` as 4th level
+- `scripts/levels/LevelTemplate.gd` — null-guard for missing `Coins` node
+- `scripts/enemies/DemonBossSlime.gd` — full rewrite: 10 HP, patrol/chase/stop AI, hit invulnerability (0.25 s), attack cooldown (1.0 s), rage at 50 % HP, death emits `all_coins_collected` to open ExitDoor
+
+**Behaviour:**
+- After completing Level 3 the game loads BossLevel automatically
+- DemonBossSlime patrols until the player enters detection range (220 px), then chases
+- Boss stops at 40 px from the player to avoid overlap jitter; contact damage fires with 1.0 s cooldown
+- Player must land exactly 10 clean hits (0.25 s invulnerability between each) to defeat the boss
+- On death: collision disabled, die animation plays, ExitDoor unlocks, boss body fades out
+
+---
+
 ## [2026-05-04] - Reusable mobile controls
 
 **Files Changed:**
