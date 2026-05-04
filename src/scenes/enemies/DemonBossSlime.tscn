@@ -141,10 +141,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(11.666667, 15)
+size = Vector2(17.166668, 32.666668)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(15.333334, 14.96875)
+size = Vector2(30.333336, 38.81771)
 
 [node name="DemonBossSlime" type="CharacterBody2D" unique_id=281432987]
 z_index = 5
@@ -154,21 +154,21 @@ script = ExtResource("1_boss")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1896813000]
 modulate = Color(0.6, 0.1, 0.9, 1)
 texture_filter = 1
-position = Vector2(-0.6666641, 0.33333588)
+position = Vector2(-0.33333334, 0.3333335)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_boss")
 animation = &"walk"
 autoplay = "walk"
-frame_progress = 0.73928326
+frame_progress = 0.26462528
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1907556376]
-position = Vector2(-0.16666651, 4.5)
+position = Vector2(16.333334, 15.333334)
 shape = SubResource("RectangleShape2D_body")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=1434465255]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=200881086]
-position = Vector2(-2.3841858e-07, 4.3333335)
+position = Vector2(15.333333, 12.000001)
 shape = SubResource("RectangleShape2D_hitbox")
 
 [node name="WallCheck" type="RayCast2D" parent="." unique_id=350682337]
@@ -176,8 +176,8 @@ position = Vector2(-18, 0)
 target_position = Vector2(-18, 0)
 
 [node name="FloorCheck" type="RayCast2D" parent="." unique_id=1114665756]
-position = Vector2(-12, 8)
-target_position = Vector2(0, 24)
+position = Vector2(-12, 1.3333348)
+target_position = Vector2(0.33333302, 33)
 
 [node name="splat_sfx" type="AudioStreamPlayer2D" parent="." unique_id=1421748798]
 stream = ExtResource("3_splat")

@@ -69,13 +69,12 @@ func _physics_process(delta: float) -> void:
 
 	if _player != null and is_instance_valid(_player):
 		var dist := global_position.distance_to(_player.global_position)
-		var dir_sign: float = signf(_player.global_position.x - global_position.x)
+		var dir_sign: float = sign(_player.global_position.x - global_position.x)
 
 		if dist <= detection_range:
 			if dir_sign != 0:
-				direction = 1 if dir_sign > 0.0 else -1
-				sprite.flip_h = direction > 0
-
+				direction = int(dir_sign)
+			sprite.flip_h = direction > 0
 			if dist > stop_distance:
 				var spd := chase_speed * (1.5 if _enraged else 1.0)
 				velocity.x = spd * dir_sign
@@ -94,9 +93,10 @@ func _physics_process(delta: float) -> void:
 	wall_check.force_raycast_update()
 	floor_check.force_raycast_update()
 
-	var is_patrolling := _player == null or not is_instance_valid(_player) or global_position.distance_to(_player.global_position) > detection_range
-
-	if is_patrolling and _flip_cooldown <= 0.0 and is_on_floor() and (_hit_wall_tile() or not floor_check.is_colliding()):
+	var is_patrolling := _player == null or not is_instance_valid(_player) \
+		or global_position.distance_to(_player.global_position) > detection_range
+	if is_patrolling and _flip_cooldown <= 0.0 and is_on_floor() \
+			and (_hit_wall_tile() or not floor_check.is_colliding()):
 		direction *= -1
 		sprite.flip_h = direction > 0
 		_flip_cooldown = 0.5
@@ -118,7 +118,6 @@ func _hit_wall_tile() -> bool:
 		for i in get_slide_collision_count():
 			if not get_slide_collision(i).get_collider() is CharacterBody2D:
 				return true
-
 	return wall_check.is_colliding() and not (wall_check.get_collider() is CharacterBody2D)
 
 func flip_direction() -> void:
@@ -161,24 +160,18 @@ func _play_hurt() -> void:
 	_is_hurt = true
 	sprite.modulate = Color.WHITE
 	_play_anim("hurt")
-
 	await get_tree().create_timer(0.15).timeout
-
 	if not _is_dying:
 		sprite.modulate = Color(1.0, 0.5, 0.1) if _enraged else Color(0.6, 0.1, 0.9)
-
 	await get_tree().create_timer(0.15).timeout
-
 	if not _is_dying:
 		_is_hurt = false
 
 func _spawn_hit_effects() -> void:
 	_hit_sfx.play()
-
 	var burst := HitBurst.instantiate()
 	burst.global_position = global_position
 	get_tree().current_scene.add_child(burst)
-
 	var players := get_tree().get_nodes_in_group("player")
 	if players.size() > 0 and players[0].has_method("shake_camera"):
 		players[0].shake_camera(5.0, 0.2)
@@ -188,28 +181,16 @@ func die() -> void:
 	velocity = Vector2.ZERO
 	sprite.modulate = Color.WHITE
 	collision_shape.set_deferred("disabled", true)
-
-	if sprite.sprite_frames and sprite.sprite_frames.has_animation("death"):
-		_play_anim("death")
-	elif sprite.sprite_frames and sprite.sprite_frames.has_animation("die"):
-		_play_anim("die")
-
+	_play_anim("die")
 	await get_tree().create_timer(1.2).timeout
-
 	GameManager.all_coins_collected.emit()
-
 	await get_tree().create_timer(0.5).timeout
 	queue_free()
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	if _is_dying:
-		return
-
 	if body.name == "Player" and body.has_method("take_damage") and _can_attack:
 		_can_attack = false
 		body.take_damage(1, global_position)
-
 		await get_tree().create_timer(attack_cooldown).timeout
-
 		if not _is_dying:
 			_can_attack = true
