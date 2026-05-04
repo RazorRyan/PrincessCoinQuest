@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cipk345owdun4"
-path="res://.godot/imported/dpad_separate.png-fd9ad9fdaf989bd5c173da5b98b81494.ctex"
+uid="uid://vppprkjxught"
+path="res://.godot/imported/demon_slime_boss.png-f144dab503b5f16704bdb06ebf83eb95.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/controls/dpad_separate.png"
-dest_files=["res://.godot/imported/dpad_separate.png-fd9ad9fdaf989bd5c173da5b98b81494.ctex"]
+source_file="res://assets/enemies/demon_slime_boss.png"
+dest_files=["res://.godot/imported/demon_slime_boss.png-f144dab503b5f16704bdb06ebf83eb95.ctex"]
 
 [params]
 

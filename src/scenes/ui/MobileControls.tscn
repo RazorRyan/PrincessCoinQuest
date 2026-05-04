@@ -17,32 +17,32 @@ layer = 10
 
 [node name="DpadSprite" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.7)
-position = Vector2(110, 590)
+position = Vector2(58, 662)
 scale = Vector2(0.594, 0.6)
 texture = ExtResource("2_dpad")
 
 [node name="BtnLeft" type="TouchScreenButton" parent="."]
-position = Vector2(91, 590)
+position = Vector2(39, 662)
 action = "move_left"
 shape = SubResource("RectShape_left")
 shape_visible = false
 
 [node name="BtnRight" type="TouchScreenButton" parent="."]
-position = Vector2(129, 590)
+position = Vector2(77, 662)
 action = "move_right"
 shape = SubResource("RectShape_right")
 shape_visible = false
 
 [node name="BtnAttack" type="TouchScreenButton" parent="."]
 modulate = Color(1, 1, 1, 0.7)
-position = Vector2(1042, 548)
+position = Vector2(1176, 662)
 scale = Vector2(0.6, 0.6)
 texture_normal = ExtResource("4_square")
 action = "attack"
 
 [node name="BtnJump" type="TouchScreenButton" parent="."]
 modulate = Color(1, 1, 1, 0.7)
-position = Vector2(1090, 570)
+position = Vector2(1222, 662)
 scale = Vector2(0.6, 0.6)
 texture_normal = ExtResource("3_circle")
 action = "jump"
