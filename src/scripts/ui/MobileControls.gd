@@ -38,3 +38,20 @@ func _ready() -> void:
 	var btn_y    := vp.y - btn_size - pad
 	$BtnAttack.position = Vector2(vp.x - btn_size * 2.0 - btn_gap - pad, btn_y)  # square (left)
 	$BtnJump.position   = Vector2(vp.x - btn_size - pad,                  btn_y)  # circle (right)
+
+	# ── Top-right: pause button ──────────────────────────────────────────────────
+	# Regular Button so it can receive input even while the tree is paused.
+	var pause_sz := 72.0
+	$BtnPause.size     = Vector2(pause_sz, pause_sz)
+	$BtnPause.position = Vector2(vp.x - pause_sz - 20.0, 20.0)
+	$BtnPause.add_theme_font_size_override("font_size", 28)
+	$BtnPause.process_mode = Node.PROCESS_MODE_ALWAYS
+	$BtnPause.pressed.connect(_on_btn_pause_pressed)
+
+func _on_btn_pause_pressed() -> void:
+	# Synthesise a ui_cancel action so the HUD's _unhandled_input handler
+	# receives it regardless of whether input came from keyboard or touch.
+	var ev := InputEventAction.new()
+	ev.action = "ui_cancel"
+	ev.pressed = true
+	Input.parse_input_event(ev)

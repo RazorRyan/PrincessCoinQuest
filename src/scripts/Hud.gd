@@ -21,7 +21,7 @@ func _connect_player() -> void:
 		player.hp_changed.connect(_on_player_hp_changed)
 	_on_player_hp_changed(player.hp, player.max_hp)
 
-func _unhandled_key_input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and not event.is_echo():
 		_toggle_pause()
 
