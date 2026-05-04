@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="8_thxdf"]
 [ext_resource type="PackedScene" uid="uid://xxh7ctnw1kf2" path="res://scenes/hazards/LavaHazard.tscn" id="9_lava"]
 [ext_resource type="PackedScene" uid="uid://cm4yabvhfrk2p" path="res://scenes/checkpoints/Checkpoint.tscn" id="10_chk"]
+[ext_resource type="PackedScene" path="res://scenes/ui/MobileControls.tscn" id="11_mobctrl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4om3"]
 texture = ExtResource("3_7bw4n")
@@ -281,3 +282,5 @@ scale = Vector2(0.5, 0.5)
 [node name="Checkpoint" parent="Checkpoints" unique_id=1914661577 instance=ExtResource("10_chk")]
 position = Vector2(368, 263)
 scale = Vector2(0.04, 0.04)
+
+[node name="MobileControls" parent="." unique_id=1900000001 instance=ExtResource("11_mobctrl")]

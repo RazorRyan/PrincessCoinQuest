@@ -15,6 +15,22 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	_play_lava_animation()
+	_sprite.frame_changed.connect(_pin_bottom)
+
+func _pin_bottom() -> void:
+	# Keep the base of the lava locked at the same y regardless of frame height.
+	# Frame 0 is the shortest — taller frames extend upward from the same base.
+	var frames := _sprite.sprite_frames
+	if frames == null:
+		return
+	var anim := _sprite.animation
+	var base_tex := frames.get_frame_texture(anim, 0)
+	var cur_tex := frames.get_frame_texture(anim, _sprite.frame)
+	if base_tex == null or cur_tex == null:
+		return
+	var base_h := float(base_tex.get_height())
+	var cur_h := float(cur_tex.get_height())
+	_sprite.offset.y = (base_h - cur_h) / 2.0
 
 func _play_lava_animation() -> void:
 	if _sprite.sprite_frames == null:

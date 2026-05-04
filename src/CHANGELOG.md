@@ -1,3 +1,30 @@
+## [2026-05-04] - Reusable mobile controls
+
+**Files Changed:**
+- `scripts/ui/MobileControls.gd` *(new)*
+- `scripts/ui/MobileControls.gd.uid` *(new)*
+- `scenes/ui/MobileControls.tscn` *(new)*
+- `scenes/levels/forest_levels/Level01.tscn`
+- `scenes/levels/forest_levels/Level02.tscn`
+- `scenes/levels/forest_levels/Level03.tscn`
+
+**What changed:**
+
+Extracted the mobile on-screen controls that were previously world-space sprites in Level03 into a standalone `MobileControls` (CanvasLayer) scene shared across all three playable levels.
+
+- `MobileControls.tscn` — CanvasLayer (layer 10) containing:
+  - `DpadSprite` — visual-only `Sprite2D` using `dpad_separate.png` (bottom-left, 70% opacity)
+  - `BtnLeft` — invisible `TouchScreenButton` covering the left half of the dpad, action `move_left`
+  - `BtnRight` — invisible `TouchScreenButton` covering the right half of the dpad, action `move_right`
+  - `BtnAttack` — `TouchScreenButton` with `button_square.png`, action `attack` (bottom-right)
+  - `BtnJump` — `TouchScreenButton` with `button_circle.png`, action `jump` (bottom-right)
+- Up/Down directions are intentionally **not wired**.
+- Keyboard controls are unaffected; touch and keyboard input are fully independent.
+- Level03: removed the three floating world-space sprite nodes (`DpadSeparate`, `ButtonCircle`, `ButtonSquare`) and replaced them with the new `MobileControls` instance.
+- Level01 and Level02: `MobileControls` instance added.
+
+---
+
 ## [2026-05-02] - Checkpoint and respawn system
 
 **Files Changed:**

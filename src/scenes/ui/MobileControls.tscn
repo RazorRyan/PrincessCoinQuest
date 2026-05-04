@@ -1,0 +1,48 @@
+[gd_scene format=4 uid="uid://22vs8aac752d"]
+
+[ext_resource type="Script" uid="uid://mobile001ctrl" path="res://scripts/ui/MobileControls.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bi8xh723pdcpj" path="res://assets/controls/dpad_separate.png" id="2_dpad"]
+[ext_resource type="Texture2D" uid="uid://dlcivwte30mvc" path="res://assets/controls/button_circle.png" id="3_circle"]
+[ext_resource type="Texture2D" uid="uid://c81u2rbcdb8od" path="res://assets/controls/button_square.png" id="4_square"]
+
+[sub_resource type="RectangleShape2D" id="RectShape_left"]
+size = Vector2(38, 77)
+
+[sub_resource type="RectangleShape2D" id="RectShape_right"]
+size = Vector2(38, 77)
+
+[node name="MobileControls" type="CanvasLayer"]
+script = ExtResource("1_script")
+layer = 10
+
+[node name="DpadSprite" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.7)
+position = Vector2(110, 590)
+scale = Vector2(0.594, 0.6)
+texture = ExtResource("2_dpad")
+
+[node name="BtnLeft" type="TouchScreenButton" parent="."]
+position = Vector2(91, 590)
+action = "move_left"
+shape = SubResource("RectShape_left")
+shape_visible = false
+
+[node name="BtnRight" type="TouchScreenButton" parent="."]
+position = Vector2(129, 590)
+action = "move_right"
+shape = SubResource("RectShape_right")
+shape_visible = false
+
+[node name="BtnAttack" type="TouchScreenButton" parent="."]
+modulate = Color(1, 1, 1, 0.7)
+position = Vector2(1042, 548)
+scale = Vector2(0.6, 0.6)
+texture_normal = ExtResource("4_square")
+action = "attack"
+
+[node name="BtnJump" type="TouchScreenButton" parent="."]
+modulate = Color(1, 1, 1, 0.7)
+position = Vector2(1090, 570)
+scale = Vector2(0.6, 0.6)
+texture_normal = ExtResource("3_circle")
+action = "jump"
