@@ -4,6 +4,7 @@ var coins_collected: int = 0
 var total_coins: int = 0
 var current_level_index: int = 0
 var cheat_invincible: bool = false
+var is_level_completed := false
 
 var current_checkpoint_position: Vector2 = Vector2.ZERO
 var has_checkpoint := false
@@ -32,12 +33,14 @@ func collect_coin() -> void:
 		all_coins_collected.emit()
 
 func complete_level() -> void:
+	is_level_completed = true
 	level_completed.emit()
 
 func start_game() -> void:
 	coins_collected = 0
 	total_coins = 0
 	current_level_index = 0
+	is_level_completed = false
 	get_tree().change_scene_to_file(levels[0])
 
 func has_next_level() -> bool:
@@ -45,11 +48,13 @@ func has_next_level() -> bool:
 
 func restart_level() -> void:
 	coins_collected = 0
+	is_level_completed = false
 	clear_checkpoint()
 	get_tree().change_scene_to_file(levels[current_level_index])
 
 func go_to_next_level() -> void:
 	var next_index := current_level_index + 1
+	is_level_completed = false
 	clear_checkpoint()
 	if next_index < levels.size():
 		current_level_index = next_index
@@ -61,6 +66,7 @@ func load_level_at_index(index: int) -> void:
 	coins_collected = 0
 	total_coins = 0
 	current_level_index = index
+	is_level_completed = false
 	clear_checkpoint()
 	get_tree().change_scene_to_file(levels[index])
 

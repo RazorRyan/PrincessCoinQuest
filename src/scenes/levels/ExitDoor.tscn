@@ -33,3 +33,16 @@ shape = SubResource("RectangleShape2D_kmp0d")
 [node name="success_sfx" type="AudioStreamPlayer2D" parent="." unique_id=520187344]
 stream = ExtResource("4_sfx")
 bus = &"SFX"
+
+[node name="GoalLabel" type="Label" parent="." unique_id=312045678]
+z_index = 5
+position = Vector2(-24, -18)
+custom_minimum_size = Vector2(48, 0)
+text = "EXIT"
+horizontal_alignment = 1
+modulate = Color(1, 1, 1, 0.45)
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(1, 0.95, 0.3, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1

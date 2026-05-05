@@ -12,6 +12,7 @@ const HitBurst := preload("res://scenes/effects/HitBurst.tscn")
 @onready var wall_check: RayCast2D = $WallCheck
 @onready var floor_check: RayCast2D = $FloorCheck
 @onready var hitbox: Area2D = $DamageArea        # Area that hurts the player on contact
+@onready var _damage_shape: CollisionShape2D = $DamageArea/DamageShape
 @onready var _splat_sfx: AudioStreamPlayer2D = $splat_sfx
 @onready var _hit_sfx: AudioStreamPlayer2D = $hit_sfx
 
@@ -129,6 +130,8 @@ func _spawn_hit_effects() -> void:
 func die() -> void:
 	_is_dying = true
 	velocity = Vector2.ZERO
+	hitbox.set_deferred("monitoring", false)
+	_damage_shape.set_deferred("disabled", true)
 	sprite.play("die")
 	await get_tree().create_timer(0.6).timeout
 	queue_free()

@@ -1,3 +1,44 @@
+## [2026-05-05] - Level completion polish, enemy death safety, boss hitbox
+
+**Files Changed:**
+- `autoload/GameManager.gd`
+- `scripts/player/Player.gd`
+- `scripts/Hud.gd`
+- `scripts/enemies/Slime.gd`
+- `scripts/enemies/DemonBossSlime.gd`
+- `scripts/levels/ExitDoor.gd`
+- `scenes/levels/ExitDoor.tscn`
+- `scenes/enemies/DemonBossSlime.tscn`
+
+**Problem:** After entering the exit door the player could still move, fall, die, and be paused. Dying enemies continued to deal damage during their death animation. The goal door was visually unclear. The boss right-side hitbox was wider than intended.
+
+**Changes:**
+
+*Level completion state (GameManager):*
+- Added `var is_level_completed := false` flag; set to `true` in `complete_level()`, reset to `false` in `start_game()`, `restart_level()`, `go_to_next_level()`, and `load_level_at_index()`.
+
+*Player freeze after completion:*
+- `_physics_process`: if `is_level_completed`, zero velocity and return immediately (prevents movement and fall-off-edge).
+- `_process`: early return when `is_level_completed` (discards all input including jump buffer).
+- `take_damage`: added `or GameManager.is_level_completed` guard — player cannot be hurt after level ends.
+- `_on_level_completed()` connected to `GameManager.level_completed` signal → snaps player to idle animation immediately.
+
+*Pause blocked after completion (Hud):*
+- `_unhandled_input`: early return if `is_level_completed` so `ui_cancel` cannot open the pause menu.
+
+*Enemy death — immediate damage disable:*
+- `Slime.die()` and `DemonBossSlime.die()` now call `hitbox.set_deferred("monitoring", false)` and `_damage_shape.set_deferred("disabled", true)` **before** playing the death animation. Player can walk through dying enemies safely.
+- Added `@onready var _damage_shape: CollisionShape2D = $DamageArea/DamageShape` to both enemy scripts.
+
+*Goal door visibility (ExitDoor):*
+- Added `GoalLabel` (Label node, z_index 5) to `ExitDoor.tscn` above the door sprite. Shows "EXIT ▼" in golden text with a drop shadow, dimmed (45 % opacity) while the door is locked.
+- `ExitDoor.gd`: on `_unlock()`, snaps label to full brightness and starts a repeating scale pulse (1.0 → 1.2 → 1.0, 0.9 s per cycle) so the goal is clearly visible once all coins are collected.
+
+*Boss right-side hitbox:*
+- `DemonBossSlime.tscn` `DamageShape` width reduced from **51 → 42** local units (world: 153 → 126 px at scale 3). Height unchanged at 56. Shape still extends ~20 % beyond the physical body collision (35 wide) to ensure `body_entered` fires reliably.
+
+---
+
 ## [2026-05-05] - Enemy and boss hitbox audit & fixes
 
 **Files Changed:**

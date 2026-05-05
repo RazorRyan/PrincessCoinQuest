@@ -22,6 +22,8 @@ func _connect_player() -> void:
 	_on_player_hp_changed(player.hp, player.max_hp)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if GameManager.is_level_completed:
+		return
 	if event.is_action_pressed("ui_cancel") and not event.is_echo():
 		_toggle_pause()
 

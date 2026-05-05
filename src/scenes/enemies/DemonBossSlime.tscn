@@ -144,7 +144,7 @@ animations = [{
 size = Vector2(35.0, 40.0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(51.0, 56.0)
+size = Vector2(42.0, 56.0)
 
 [node name="DemonBossSlime" type="CharacterBody2D" unique_id=281432987]
 z_index = 5

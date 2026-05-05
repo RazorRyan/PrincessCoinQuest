@@ -42,6 +42,7 @@ func _ready() -> void:
 	attack_area.body_entered.connect(_on_attack_area_body_entered)
 	floor_snap_length = 8.0
 	hp_changed.emit(hp, max_hp)
+	GameManager.level_completed.connect(_on_level_completed)
 
 func activate_invincibility() -> void:
 	_power_up_active = true
@@ -65,6 +66,8 @@ func _find_and_set_pitch(node: Node, pitch: float) -> void:
 		_find_and_set_pitch(child, pitch)
 
 func _process(delta: float) -> void:
+	if GameManager.is_level_completed:
+		return
 	# Capture jump intent early so a press just before landing still fires.
 	if Input.is_action_just_pressed("jump"):
 		_jump_buffer_timer = JUMP_BUFFER_TIME
@@ -82,6 +85,10 @@ func _physics_process(delta: float) -> void:
 
 	if is_dying:
 		move_and_slide()
+		return
+
+	if GameManager.is_level_completed:
+		velocity = Vector2.ZERO
 		return
 
 	if global_position.y > fall_death_y:
@@ -139,6 +146,11 @@ func attack() -> void:
 	await get_tree().create_timer(ATTACK_COOLDOWN).timeout
 	can_attack = true
 
+func _on_level_completed() -> void:
+	velocity = Vector2.ZERO
+	is_attacking = false
+	sprite.play("idle")
+
 func _on_attack_area_body_entered(body: Node2D) -> void:
 	if body == self:
 		return
@@ -147,7 +159,8 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 		body.take_damage(ATTACK_DAMAGE, global_position)
 
 func take_damage(amount: int, from_position: Vector2 = Vector2.ZERO) -> void:
-	if _power_up_active or is_invincible or is_dying or GameManager.cheat_invincible:
+	if _power_up_active or is_invincible or is_dying or GameManager.cheat_invincible \
+			or GameManager.is_level_completed:
 		return
 
 	hp -= amount
