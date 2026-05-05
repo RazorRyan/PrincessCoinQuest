@@ -8,14 +8,14 @@ const HitBurst := preload("res://scenes/effects/HitBurst.tscn")
 @export var hp := 10
 @export var knockback_force := 60.0
 @export var detection_range := 220.0
-@export var stop_distance := 40.0
+@export var stop_distance := 80.0
 @export var attack_cooldown := 1.0
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var wall_check: RayCast2D = $WallCheck
 @onready var floor_check: RayCast2D = $FloorCheck
-@onready var hitbox: Area2D = $Hitbox
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var hitbox: Area2D = $DamageArea              # Area that hurts the player on contact
+@onready var collision_shape: CollisionShape2D = $BodyCollision  # Physics body shape (floor/wall)
 @onready var _splat_sfx: AudioStreamPlayer2D = $splat_sfx
 @onready var _hit_sfx: AudioStreamPlayer2D = $hit_sfx
 
@@ -24,6 +24,7 @@ var _flip_cooldown := 0.0
 var _knockback_timer := 0.0
 var _is_hurt := false
 var _is_dying := false
+var _is_attacking := false
 var _can_take_hit := true
 var _can_attack := true
 var _max_hp: int
@@ -80,6 +81,7 @@ func _physics_process(delta: float) -> void:
 				velocity.x = spd * dir_sign
 			else:
 				velocity.x = 0.0
+				_try_attack()
 		else:
 			_do_patrol()
 	else:
@@ -101,12 +103,34 @@ func _physics_process(delta: float) -> void:
 		sprite.flip_h = direction > 0
 		_flip_cooldown = 0.5
 
-	if not _is_hurt and not _is_dying:
+	if not _is_hurt and not _is_dying and not _is_attacking:
 		_play_anim("walk")
 
 func _do_patrol() -> void:
 	var spd := patrol_speed * (1.5 if _enraged else 1.0)
 	velocity.x = spd * direction
+
+
+func _try_attack() -> void:
+	if _can_attack and not _is_attacking and not _is_hurt and not _is_dying:
+		_is_attacking = true
+		_can_attack = false
+		_play_anim("attack")
+		# Strike frame lands at ~60% through the 3-frame animation (speed 5 → 0.6 s total).
+		await get_tree().create_timer(0.35).timeout
+		# Deal damage if player is still in range.
+		if not _is_dying and _player != null and is_instance_valid(_player):
+			var dist := global_position.distance_to(_player.global_position)
+			if dist <= stop_distance * 1.4 and _player.has_method("take_damage"):
+				_player.take_damage(1, global_position)
+		# Wait for animation to finish.
+		await get_tree().create_timer(0.25).timeout
+		if not _is_dying:
+			_is_attacking = false
+		# Cooldown before next attack.
+		await get_tree().create_timer(attack_cooldown).timeout
+		if not _is_dying:
+			_can_attack = true
 
 func _play_anim(anim_name: String) -> void:
 	if sprite.sprite_frames and sprite.sprite_frames.has_animation(anim_name):
@@ -188,7 +212,10 @@ func die() -> void:
 	queue_free()
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	if body.name == "Player" and body.has_method("take_damage") and _can_attack:
+	# Passive contact damage — only fires when the player walks INTO the boss
+	# while the boss is NOT actively attacking (attack damage is handled by _try_attack).
+	if body.name == "Player" and body.has_method("take_damage") \
+			and not _is_attacking and _can_attack:
 		_can_attack = false
 		body.take_damage(1, global_position)
 		await get_tree().create_timer(attack_cooldown).timeout

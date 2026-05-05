@@ -62,7 +62,7 @@ animations = [{
 size = Vector2(11.666667, 15)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qf73r"]
-size = Vector2(15.333334, 14.96875)
+size = Vector2(24.0, 28.0)
 
 [node name="Slime" type="CharacterBody2D" unique_id=1885526685]
 scale = Vector2(2, 2)
@@ -75,13 +75,13 @@ sprite_frames = SubResource("SpriteFrames_xdv7e")
 animation = &"hurt"
 autoplay = "walk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1203670601]
+[node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1203670601]
 position = Vector2(-0.16666651, 4.5)
 shape = SubResource("RectangleShape2D_qfcr1")
 
-[node name="Hitbox" type="Area2D" parent="." unique_id=1270978030]
+[node name="DamageArea" type="Area2D" parent="." unique_id=1270978030]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1297392865]
+[node name="DamageShape" type="CollisionShape2D" parent="DamageArea" unique_id=1297392865]
 position = Vector2(-2.3841858e-07, 4.3333335)
 shape = SubResource("RectangleShape2D_qf73r")
 

@@ -1,3 +1,29 @@
+## [2026-05-05] - Enemy and boss hitbox audit & fixes
+
+**Files Changed:**
+- `scenes/enemies/Slime.tscn`
+- `scenes/enemies/DemonBossSlime.tscn`
+- `scripts/enemies/Slime.gd`
+- `scripts/enemies/DemonBossSlime.gd`
+
+**Problem:** Enemy and boss damage areas were larger than their visible bodies, causing phantom damage when the player was not visibly touching them.
+
+**Changes:**
+
+*Slime:*
+- `DamageArea` (formerly `Hitbox`) shape reduced from **15.33 × 14.97** → **10.0 × 11.0** local units (world: 30.7 × 30 → 20 × 22 px at scale 2). Previously wider than the body collision shape.
+- `CollisionShape2D` renamed → `BodyCollision` (physical floor/wall shape, unchanged)
+- `Hitbox` Area2D renamed → `DamageArea`; child shape renamed → `DamageShape`
+
+*DemonBossSlime:*
+- `DamageArea` (formerly `Hitbox`) shape reduced from **30.33 × 38.82** → **15.0 × 28.0** local units (world: 91 × 116 → 45 × 84 px at scale 3). Was 1.77× wider than the physical body.
+- `DamageShape` position aligned to match `BodyCollision` centre (16.33, 15.33)
+- `CollisionShape2D` renamed → `BodyCollision`; `Hitbox` → `DamageArea`; child shape → `DamageShape`
+
+**Sizing strategy:** `DamageArea` is now ~10% smaller than `BodyCollision` on all sides to give the player edge forgiveness. `BodyCollision` unchanged so floor/wall physics are unaffected. Boss still requires 10 hits to defeat.
+
+---
+
 ## [2026-05-04] - Boss level integration and DemonBossSlime AI
 
 **Files Changed:**

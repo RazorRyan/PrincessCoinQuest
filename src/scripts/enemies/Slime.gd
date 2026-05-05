@@ -11,7 +11,7 @@ const HitBurst := preload("res://scenes/effects/HitBurst.tscn")
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var wall_check: RayCast2D = $WallCheck
 @onready var floor_check: RayCast2D = $FloorCheck
-@onready var hitbox: Area2D = $Hitbox
+@onready var hitbox: Area2D = $DamageArea        # Area that hurts the player on contact
 @onready var _splat_sfx: AudioStreamPlayer2D = $splat_sfx
 @onready var _hit_sfx: AudioStreamPlayer2D = $hit_sfx
 

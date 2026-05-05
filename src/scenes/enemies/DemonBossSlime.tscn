@@ -141,10 +141,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(17.166668, 32.666668)
+size = Vector2(35.0, 40.0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(30.333336, 38.81771)
+size = Vector2(51.0, 56.0)
 
 [node name="DemonBossSlime" type="CharacterBody2D" unique_id=281432987]
 z_index = 5
@@ -161,14 +161,14 @@ animation = &"walk"
 autoplay = "walk"
 frame_progress = 0.26462528
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1907556376]
-position = Vector2(16.333334, 15.333334)
+[node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1907556376]
+position = Vector2(0, 12)
 shape = SubResource("RectangleShape2D_body")
 
-[node name="Hitbox" type="Area2D" parent="." unique_id=1434465255]
+[node name="DamageArea" type="Area2D" parent="." unique_id=1434465255]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=200881086]
-position = Vector2(15.333333, 12.000001)
+[node name="DamageShape" type="CollisionShape2D" parent="DamageArea" unique_id=200881086]
+position = Vector2(0, 12)
 shape = SubResource("RectangleShape2D_hitbox")
 
 [node name="WallCheck" type="RayCast2D" parent="." unique_id=350682337]
