@@ -18,25 +18,41 @@ const FADE_DURATION := 0.5
 @onready var fade_overlay: ColorRect = $FadeOverlay
 @onready var skip_label: Label = $SkipLabel
 @onready var intro_music: AudioStreamPlayer = $IntroMusic
+@onready var skip_button: Button = $SkipButton
 
 var _current_frame := 0
 var _on_last_frame := false
 var _waiting_for_input := false
+var _skipped := false
 
 func _ready() -> void:
 	fade_overlay.color = Color(0, 0, 0, 1)
 	movie_image.scale = Vector2.ONE
 	skip_label.modulate.a = 0.0
 	intro_music.play(0.0)
+	skip_button.pressed.connect(_on_skip_pressed)
 	_play_sequence()
 
 func _input(event: InputEvent) -> void:
+	if _skipped:
+		return
+	# Allow any key press to skip at any time.
+	if event is InputEventKey and event.pressed and not event.echo:
+		_on_skip_pressed()
+		return
 	if not _waiting_for_input:
 		return
 	if event is InputEventMouseButton and not event.pressed:
 		return
 	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		_load_first_level()
+		_on_skip_pressed()
+
+
+func _on_skip_pressed() -> void:
+	if _skipped:
+		return
+	_skipped = true
+	_load_first_level()
 
 # ── Main sequence ─────────────────────────────────────────────────────────────
 
