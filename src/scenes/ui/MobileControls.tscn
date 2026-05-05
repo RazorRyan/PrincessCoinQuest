@@ -6,10 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://c81u2rbcdb8od" path="res://assets/controls/button_square.png" id="4_square"]
 
 [sub_resource type="RectangleShape2D" id="RectShape_left"]
-size = Vector2(38, 77)
+size = Vector2(80, 100)
 
 [sub_resource type="RectangleShape2D" id="RectShape_right"]
-size = Vector2(38, 77)
+size = Vector2(80, 100)
 
 [node name="MobileControls" type="CanvasLayer" unique_id=1064376649]
 layer = 10
