@@ -1,52 +1,110 @@
 [gd_scene format=3 uid="uid://b3vtfy0xemsmj"]
 
 [ext_resource type="Script" uid="uid://22vs8aacp7ib" path="res://scripts/ui/MobileControls.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://cipk345owdun4" path="res://assets/controls/dpad_separate.png" id="2_dpad"]
-[ext_resource type="Texture2D" uid="uid://dlcivwte30mvc" path="res://assets/controls/button_circle.png" id="3_circle"]
-[ext_resource type="Texture2D" uid="uid://c81u2rbcdb8od" path="res://assets/controls/button_square.png" id="4_square"]
+[ext_resource type="Texture2D" uid="uid://7x5nwwripst0" path="res://assets/controls/direction_left_highlight.png" id="2_left"]
+[ext_resource type="Texture2D" uid="uid://btnkv2c67mq4k" path="res://assets/controls/direction_right_highlight.png" id="3_right"]
+[ext_resource type="Texture2D" uid="uid://dlcivwte30mvc" path="res://assets/controls/button_circle.png" id="4_circle"]
+[ext_resource type="Texture2D" uid="uid://c81u2rbcdb8od" path="res://assets/controls/button_square.png" id="5_square"]
 
-[sub_resource type="RectangleShape2D" id="RectShape_left"]
-size = Vector2(80, 100)
-
-[sub_resource type="RectangleShape2D" id="RectShape_right"]
-size = Vector2(80, 100)
-
-[node name="MobileControls" type="CanvasLayer" unique_id=1064376649]
+[node name="MobileControls" type="CanvasLayer"]
 layer = 10
 script = ExtResource("1_script")
 
-[node name="DpadSprite" type="Sprite2D" parent="." unique_id=434855007]
-modulate = Color(1, 1, 1, 0.7)
-position = Vector2(94, 611)
-scale = Vector2(1, 1.01)
-texture = ExtResource("2_dpad")
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
-[node name="BtnLeft" type="TouchScreenButton" parent="." unique_id=1842144153]
-position = Vector2(56, 612)
-shape = SubResource("RectShape_left")
-shape_visible = false
-action = "move_left"
+[node name="LeftButton" type="TextureButton" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -140.0
+offset_right = 140.0
+offset_bottom = -20.0
+pivot_offset = Vector2(60, 60)
+mouse_filter = 0
+modulate = Color(1, 1, 1, 0.75)
+texture_normal = ExtResource("2_left")
 
-[node name="BtnRight" type="TouchScreenButton" parent="." unique_id=879871852]
-position = Vector2(137, 608)
-shape = SubResource("RectShape_right")
-shape_visible = false
-action = "move_right"
+[node name="RightButton" type="TextureButton" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 148.0
+offset_top = -140.0
+offset_right = 268.0
+offset_bottom = -20.0
+pivot_offset = Vector2(60, 60)
+mouse_filter = 0
+modulate = Color(1, 1, 1, 0.75)
+texture_normal = ExtResource("3_right")
 
-[node name="BtnAttack" type="TouchScreenButton" parent="." unique_id=636267275]
-modulate = Color(1, 1, 1, 0.7)
-position = Vector2(1060, 571)
-texture_normal = ExtResource("4_square")
-action = "attack"
+[node name="JumpButton" type="TextureButton" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -140.0
+offset_right = -20.0
+offset_bottom = -20.0
+pivot_offset = Vector2(60, 60)
+mouse_filter = 0
+modulate = Color(1, 1, 1, 0.75)
+texture_normal = ExtResource("4_circle")
 
-[node name="BtnJump" type="TouchScreenButton" parent="." unique_id=1799232283]
-modulate = Color(1, 1, 1, 0.7)
-position = Vector2(1180, 568)
-texture_normal = ExtResource("3_circle")
-action = "jump"
+[node name="AttackButton" type="TextureButton" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -268.0
+offset_top = -140.0
+offset_right = -148.0
+offset_bottom = -20.0
+pivot_offset = Vector2(60, 60)
+mouse_filter = 0
+modulate = Color(1, 1, 1, 0.75)
+texture_normal = ExtResource("5_square")
 
-[node name="BtnPause" type="Button" parent="." unique_id=1900000002]
+[node name="PauseButton" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -92.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 92.0
 modulate = Color(1, 1, 1, 0.85)
-offset_right = 72.0
-offset_bottom = 72.0
 text = "||"
+
+[node name="DebugLabel" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_top = 100.0
+offset_bottom = 130.0
+horizontal_alignment = 1
+visible = false

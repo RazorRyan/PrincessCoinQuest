@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b6upob1enveel" path="res://scenes/player/Player.tscn" id="2_rqyfh"]
 [ext_resource type="PackedScene" uid="uid://b8qlkk50hjyws" path="res://scenes/levels/ExitDoor.tscn" id="3_pl8n6"]
 [ext_resource type="PackedScene" uid="uid://ca8mfs7jn5b7o" path="res://scenes/ui/HUD.tscn" id="4_2o8te"]
+[ext_resource type="PackedScene" uid="uid://b3vtfy0xemsmj" path="res://scenes/ui/MobileControls.tscn" id="5_mobile"]
 
 [node name="LevelTemplate" type="Node2D" unique_id=1682050012]
 script = ExtResource("1_vyyr7")
@@ -31,3 +32,5 @@ position = Vector2(181, 142)
 position = Vector2(414, 140)
 
 [node name="Hud" parent="." unique_id=203162232 instance=ExtResource("4_2o8te")]
+
+[node name="MobileControls" parent="." unique_id=203162233 instance=ExtResource("5_mobile")]

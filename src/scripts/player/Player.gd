@@ -31,6 +31,9 @@ var _power_up_active := false
 var _power_up_timer := 0.0
 var _spawn_position: Vector2
 
+const JUMP_BUFFER_TIME := 0.15
+var _jump_buffer_timer := 0.0
+
 func _ready() -> void:
 	hp = max_hp
 	_spawn_position = global_position
@@ -60,6 +63,14 @@ func _find_and_set_pitch(node: Node, pitch: float) -> void:
 		return
 	for child in node.get_children():
 		_find_and_set_pitch(child, pitch)
+
+func _process(delta: float) -> void:
+	# Capture jump intent early so a press just before landing still fires.
+	if Input.is_action_just_pressed("jump"):
+		_jump_buffer_timer = JUMP_BUFFER_TIME
+	if _jump_buffer_timer > 0.0:
+		_jump_buffer_timer -= delta
+
 
 func _physics_process(delta: float) -> void:
 	if _power_up_active:
@@ -91,8 +102,9 @@ func _physics_process(delta: float) -> void:
 			sprite.flip_h = direction < 0
 			attack_area.scale.x = -1 if direction < 0 else 1
 
-		if Input.is_action_just_pressed("jump") and is_on_floor():
+		if _jump_buffer_timer > 0.0 and is_on_floor():
 			velocity.y = JUMP_VELOCITY
+			_jump_buffer_timer = 0.0
 			_jump_sfx.play()
 
 		if Input.is_action_just_pressed("attack") and can_attack:

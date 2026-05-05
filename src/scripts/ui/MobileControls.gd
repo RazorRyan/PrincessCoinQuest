@@ -1,56 +1,121 @@
 extends CanvasLayer
 
-# Mobile touch controls overlay.
-# TouchScreenButton nodes fire Input actions automatically — keyboard input is unaffected.
-#
-# Positions are recalculated at runtime so buttons stick to screen edges on any
-# screen size (essential when stretch/aspect = expand changes the effective viewport width).
+## Mobile touch controls overlay.
+##
+## Multi-touch is handled by tracking each InputEventScreenTouch index so the
+## player can hold LEFT and tap JUMP at the same time without either being
+## cancelled.  The CanvasLayer.layer is set high so controls always draw on top.
+##
+## On desktop builds the overlay hides itself so it never interferes with
+## keyboard or gamepad play.
+
+@onready var _left_btn: TextureButton   = $Control/LeftButton
+@onready var _right_btn: TextureButton  = $Control/RightButton
+@onready var _jump_btn: TextureButton   = $Control/JumpButton
+@onready var _attack_btn: TextureButton = $Control/AttackButton
+@onready var _pause_btn: Button         = $Control/PauseButton
+@onready var _debug_lbl: Label          = $Control/DebugLabel
+
+## Maps touch finger index → input action name.
+var _touch_map: Dictionary = {}
 
 func _ready() -> void:
-	var vp := get_viewport().get_visible_rect().size
+	# Hide on desktop unless emulate_touch_from_mouse is on (used for testing).
+	var is_mobile: bool = OS.has_feature("mobile") or OS.has_feature("web")
+	var emulate_touch: bool = ProjectSettings.get_setting(
+			"input_devices/pointing/emulate_touch_from_mouse", false)
+	if not (is_mobile or emulate_touch):
+		visible = false
+		return
 
-	# Scale all controls 2× for visibility on modern phone displays (e.g. Samsung S25).
-	# Do NOT scale the CanvasLayer itself — that shifts children away from screen edges.
-	$DpadSprite.scale = Vector2(2.0, 2.0)
-	$BtnLeft.scale    = Vector2(2.0, 2.0)
-	$BtnRight.scale   = Vector2(2.0, 2.0)
-	$BtnAttack.scale  = Vector2(2.0, 2.0)
-	$BtnJump.scale    = Vector2(2.0, 2.0)
+	_pause_btn.add_theme_font_size_override("font_size", 28)
+	# Pause button must respond even when the tree is paused.
+	_pause_btn.process_mode = Node.PROCESS_MODE_ALWAYS
+	_pause_btn.pressed.connect(_on_pause_pressed)
 
-	# ── Left side: d-pad ────────────────────────────────────────────────────────
-	# DpadSprite is a Sprite2D whose origin is its centre.
-	# At scale 2× the rendered half-height ≈ 64 px → centre 84 px from bottom
-	# (64 px half-height + 20 px padding = 84 px).
-	# BtnLeft / BtnRight shapes are 38×77 local units → 76×154 effective at scale 2.
-	var dpad_cx := 150.0
-	var dpad_cy := vp.y - 84.0
-	$DpadSprite.position = Vector2(dpad_cx, dpad_cy)
-	$BtnLeft.position    = Vector2(dpad_cx - 38.0, dpad_cy)
-	$BtnRight.position   = Vector2(dpad_cx + 38.0, dpad_cy)
+	# Debug label only shows in editor / debug exports.
+	_debug_lbl.visible = OS.is_debug_build()
 
-	# ── Right side: action buttons ───────────────────────────────────────────────
-	# BtnAttack / BtnJump have a 64×64 texture; at scale 2× they render as 128×128.
-	# Position is the top-left corner of the scaled button.
-	# 20 px padding from right and bottom edges; 10 px gap between buttons.
-	var btn_size := 128.0
-	var btn_gap  := 10.0
-	var pad      := 20.0
-	var btn_y    := vp.y - btn_size - pad
-	$BtnAttack.position = Vector2(vp.x - btn_size * 2.0 - btn_gap - pad, btn_y)  # square (left)
-	$BtnJump.position   = Vector2(vp.x - btn_size - pad,                  btn_y)  # circle (right)
 
-	# ── Top-right: pause button ──────────────────────────────────────────────────
-	# Regular Button so it can receive input even while the tree is paused.
-	var pause_sz := 72.0
-	$BtnPause.size     = Vector2(pause_sz, pause_sz)
-	$BtnPause.position = Vector2(vp.x - pause_sz - 20.0, 20.0)
-	$BtnPause.add_theme_font_size_override("font_size", 28)
-	$BtnPause.process_mode = Node.PROCESS_MODE_ALWAYS
-	$BtnPause.pressed.connect(_on_btn_pause_pressed)
+func _exit_tree() -> void:
+	# Release any held actions when the scene is unloaded (e.g. level change).
+	for action: String in _touch_map.values():
+		Input.action_release(action)
+	_touch_map.clear()
 
-func _on_btn_pause_pressed() -> void:
-	# Synthesise a ui_cancel action so the HUD's _unhandled_input handler
-	# receives it regardless of whether input came from keyboard or touch.
+
+func _input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_on_touch_down(event.index, event.position)
+		else:
+			_on_touch_up(event.index)
+
+
+func _on_touch_down(touch_id: int, pos: Vector2) -> void:
+	var map: Dictionary = {
+		"move_left":  _left_btn,
+		"move_right": _right_btn,
+		"jump":       _jump_btn,
+		"attack":     _attack_btn,
+	}
+	for action: String in map:
+		var btn: TextureButton = map[action]
+		if btn.get_global_rect().has_point(pos):
+			_touch_map[touch_id] = action
+			Input.action_press(action)
+			_animate_press(btn)
+			_update_debug()
+			return
+
+
+func _on_touch_up(touch_id: int) -> void:
+	if not _touch_map.has(touch_id):
+		return
+	var action: String = _touch_map[touch_id]
+	Input.action_release(action)
+	_animate_release(_btn_for_action(action))
+	_touch_map.erase(touch_id)
+	_update_debug()
+
+
+func _btn_for_action(action: String) -> TextureButton:
+	match action:
+		"move_left":  return _left_btn
+		"move_right": return _right_btn
+		"jump":       return _jump_btn
+		"attack":     return _attack_btn
+	return null
+
+
+func _animate_press(btn: TextureButton) -> void:
+	var tw := create_tween()
+	tw.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(btn, "scale", Vector2(0.85, 0.85), 0.06)
+	btn.modulate = Color(1.0, 1.0, 0.7, 0.95)
+
+
+func _animate_release(btn: TextureButton) -> void:
+	if btn == null:
+		return
+	var tw := create_tween()
+	tw.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(btn, "scale", Vector2(1.0, 1.0), 0.12)
+	btn.modulate = Color(1.0, 1.0, 1.0, 0.75)
+
+
+func _update_debug() -> void:
+	if not _debug_lbl.visible:
+		return
+	var parts: Array[String] = []
+	for action: String in _touch_map.values():
+		parts.append(action.to_upper().replace("_", " "))
+	_debug_lbl.text = " | ".join(parts)
+
+
+func _on_pause_pressed() -> void:
 	var ev := InputEventAction.new()
 	ev.action = "ui_cancel"
 	ev.pressed = true
